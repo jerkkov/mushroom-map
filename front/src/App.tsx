@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import './App.scss';
 import 'leaflet/dist/leaflet.css';
 import type { FeatureCollection, Feature } from 'geojson';
@@ -24,7 +24,13 @@ const App = () => {
 	const [mapIsReady, setMapIsReady] = useState<boolean>(false);
 	const [error, setError] = useState<Error | undefined>(undefined);
 	const [mapData, setMapData] = useState<FeatureCollection | null>(null);
+	const [layers, setLayers] =
+		useState<{ id: number; name: string; checked: boolean }[]>();
 
+	const initialLayers = [
+		{ id: 0, name: 'Suppilovahvero', checked: true },
+		{ id: 1, name: 'Keltavahvero', checked: true },
+	];
 	// useEffect(() => {
 	// 	const { current = {} } = mapRef;
 	// 	console.log(mapRef);
@@ -38,6 +44,7 @@ const App = () => {
 		try {
 			setLoading(true);
 			setMapData(Tampere as FeatureCollection);
+			setLayers(initialLayers);
 			setLoading(false);
 		} catch (error: any) {
 			console.error(`Could not fetch: ${error}`);
@@ -50,6 +57,15 @@ const App = () => {
 		feature: Feature,
 		featureLayer: FeatureGroupProps
 	) => {};
+
+	const updateCheckStatus = (index: number) => {
+		if (!layers) return;
+		setLayers(
+			layers.map((layer, currentIndex) =>
+				currentIndex === index ? { ...layer, checked: !layer.checked } : layer
+			)
+		);
+	};
 
 	// const mushroom = L.geoJSON(mapData, { filter: mushroomFilter }).addTo(map);
 	function suppiloFilter(feature: Feature) {
@@ -76,21 +92,45 @@ const App = () => {
 		return <div>loading...</div>;
 	}
 
-	function Sider() {
+	type SiderProps = {
+		children: ReactNode;
+	};
+
+	function Sider({ children }: SiderProps) {
 		return (
 			<section className="sider">
-				<Switch />
-				<Switch />
+				<div className="content">{children}</div>
 			</section>
 		);
 	}
 
-	function Switch() {
+	function Switch({
+		label,
+		isChecked = false,
+		index,
+		checkHandler,
+	}: {
+		label?: string;
+		isChecked?: boolean;
+		index: number;
+		checkHandler: any;
+	}) {
+		console.log({ isChecked });
+
 		return (
-			<label className="switch">
-				<input type="checkbox" />
-				<span className="slider round"></span>
-			</label>
+			<section className="switch-container">
+				{label && <span className="position">{label}</span>}
+				<br />
+				<label className="switch">
+					<input
+						type="checkbox"
+						id={`checkbox-${index}`}
+						checked={isChecked}
+						onChange={checkHandler}
+					/>
+					<span className="slider round"></span>
+				</label>
+			</section>
 		);
 	}
 
@@ -101,7 +141,18 @@ const App = () => {
 			</header>
 			<div className="wrapper">
 				<main className="content-container">
-					<Sider />
+					<Sider>
+						{layers &&
+							layers.map((checkbox) => (
+								<Switch
+									key={checkbox.name}
+									checkHandler={() => updateCheckStatus(checkbox.id)}
+									isChecked={checkbox.checked}
+									index={checkbox.id}
+									label={checkbox.name}
+								/>
+							))}
+					</Sider>
 					<MapContainer
 						center={[61.4978, 23.761]}
 						zoom={13}
