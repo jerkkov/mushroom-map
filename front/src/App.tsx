@@ -1,8 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css';
 import 'leaflet/dist/leaflet.css';
-import type { FeatureCollection } from 'geojson';
-import { TileLayer, GeoJSON, MapContainer, useMap } from 'react-leaflet';
+import type { FeatureCollection, Feature } from 'geojson';
+import {
+	TileLayer,
+	GeoJSON,
+	MapContainer,
+	useMap,
+	FeatureGroup,
+	FeatureGroupProps,
+	LayerGroup,
+} from 'react-leaflet';
 import Tampere from './assets/tampere-polygon-wgs84.json';
 import L from 'leaflet';
 // import Tampere from './services/tampere-metsavarakuviot.json';
@@ -38,6 +46,32 @@ const App = () => {
 		}
 	}, []);
 
+	const onEachFeature = (
+		feature: Feature,
+		featureLayer: FeatureGroupProps
+	) => {};
+
+	// const mushroom = L.geoJSON(mapData, { filter: mushroomFilter }).addTo(map);
+	function suppiloFilter(feature: Feature) {
+		const properties = { ...feature.properties };
+		return (
+			properties.MAINTREESPECIES === 2 &&
+			properties.FERTILITYCLASS <= 3 &&
+			properties.DEVELOPMENTCLASS === '04'
+		);
+	}
+
+	function kanttarelliFilter(feature: Feature) {
+		const properties = { ...feature.properties };
+		return (
+			(properties.MAINTREESPECIES === 4 ||
+				properties.MAINTREESPECIES === 3 ||
+				properties.MAINTREESPECIES === 27) &&
+			(properties.FERTILITYCLASS === 3 || properties.FERTILITYCLASS === 2) &&
+			properties.DEVELOPMENTCLASS === '04'
+		);
+	}
+
 	if (!mapData || loading) {
 		return <div>loading...</div>;
 	}
@@ -56,7 +90,23 @@ const App = () => {
 					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 				/>
-				<GeoJSON data={mapData} ref={mapDataRef} key={mapData.fid} filter={} />
+				{mapData && (
+					<LayerGroup>
+						<GeoJSON
+							data={mapData}
+							ref={mapDataRef}
+							// key={mapData[0].properties.fid}
+							filter={suppiloFilter}
+						/>
+						<GeoJSON
+							data={mapData}
+							ref={mapDataRef}
+							// key={mapData[0].properties.fid}
+							filter={kanttarelliFilter}
+							style={{ color: 'red' }}
+						/>
+					</LayerGroup>
+				)}
 			</MapContainer>
 		</>
 	);
