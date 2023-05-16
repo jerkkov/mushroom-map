@@ -1,49 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css';
 import 'leaflet/dist/leaflet.css';
-import Map from './Map';
-import { getLayer } from './services/geoLayer';
-import { Feature, polygonCoordinates } from './types/types';
+import type { FeatureCollection } from 'geojson';
+import { TileLayer, GeoJSON, MapContainer, useMap } from 'react-leaflet';
+import Tampere from './assets/tampere-polygon-wgs84.json';
+import L from 'leaflet';
+// import Tampere from './services/tampere-metsavarakuviot.json';
 
 const App = () => {
+	const mapRef = useRef();
+	const mapDataRef = useRef();
+	// const map = useMap();
+
 	const [loading, setLoading] = useState<boolean>(false);
+	const [mapIsReady, setMapIsReady] = useState<boolean>(false);
 	const [error, setError] = useState<Error | undefined>(undefined);
+	const [mapData, setMapData] = useState<FeatureCollection | null>(null);
 
-	const [polygonCoords, setPolygonCoords] = useState<any | undefined>(
-		undefined
-	);
+	// useEffect(() => {
+	// 	const { current = {} } = mapRef;
+	// 	console.log(mapRef);
+	// 	mapRef.current;
 
-	// const getCoordinates = () => {
-	//   if (!layers || layers.length < 1) return;
-
-	//   const coordinates =
-	//     layers.filter((layer) =>
-	//       layer.properties.MAINTREESPECIES === 2)
-	//       .map((coordinate) => coordinate.bbox)
-
-	//   return coordinates
-	// }
+	// 	// const tampereGeoJson = new L.GeoJSON(Tampere);
+	// 	// tampereGeoJson.addTo(mapRef);
+	// }, [mapRef]);
 
 	useEffect(() => {
 		try {
 			setLoading(true);
-			getLayer().then((data) => {
-				console.log('data layers successfully fetched');
-
-				const coordinates = data.features
-					.filter((layer) => layer.properties.MAINTREESPECIES === 2)
-					.map((coordinate) => coordinate.bbox)
-					.map((point) => {
-						const mid = Math.floor(point.length / 2);
-						return [
-							[0, mid],
-							[mid, point.length],
-						].map((idxs) => point.slice(...idxs));
-					});
-				setPolygonCoords(coordinates);
-				console.log('polygonCoords', coordinates);
-				setLoading(false);
-			});
+			setMapData(Tampere as FeatureCollection);
+			setLoading(false);
 		} catch (error: any) {
 			console.error(`Could not fetch: ${error}`);
 			setLoading(false);
@@ -51,31 +38,28 @@ const App = () => {
 		}
 	}, []);
 
-	// const formatCoordsForPolygon = (coordinates: Feature) => {
-	//   if (!coordinates || coordinates.length < 1) return;
-
-	//   const mid = Math.floor(coordinates[0].length / 2);
-	//   const polygonCoords = coordinates.map((point) => [[0, mid], [mid, point.length]].map(idxs => point.slice(...idxs)));
-	//   console.log('polygonCoords', polygonCoords);
-	//   return polygonCoords;
-	// }
-
-	if (error) {
-		return <div>ERROR: {error.message}</div>;
-	}
-
-	if (loading) {
+	if (!mapData || loading) {
 		return <div>loading...</div>;
 	}
 
-	if (polygonCoords && polygonCoords.length > 0) {
-		return (
-			<>
-				<h1>Mushroom Map Test</h1>
-				<Map points={polygonCoords} loading={loading} />
-			</>
-		);
-	}
+	return (
+		<>
+			<h1>Mushroom Map Test</h1>
+			<MapContainer
+				center={[61.4978, 23.761]}
+				zoom={13}
+				scrollWheelZoom={false}
+				ref={mapRef}
+				whenReady={() => setMapIsReady(true)}
+			>
+				<TileLayer
+					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+				/>
+				<GeoJSON data={mapData} ref={mapDataRef} key={mapData.fid} filter={} />
+			</MapContainer>
+		</>
+	);
 };
 
 export default App;
