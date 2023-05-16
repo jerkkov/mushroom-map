@@ -1,4 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import './App.scss';
 import 'leaflet/dist/leaflet.css';
 import type { FeatureCollection, Feature } from 'geojson';
@@ -9,6 +10,7 @@ import {
 	FeatureGroupProps,
 	LayerGroup,
 	LayersControl,
+	Popup,
 } from 'react-leaflet';
 import Tampere from './assets/tampere-polygon-wgs84.json';
 import L from 'leaflet';
@@ -42,19 +44,41 @@ const App = () => {
 		}
 	}, []);
 
-	const onEachFeature = (
-		feature: Feature,
-		featureLayer: FeatureGroupProps
-	) => {};
+	function CustomPopup({ feature }: { feature: Feature }) {
+		if (!feature || !feature.properties) return;
 
-	const updateCheckStatus = (index: number) => {
-		if (!layers) return;
-		setLayers(
-			layers.map((layer, currentIndex) =>
-				currentIndex === index ? { ...layer, checked: !layer.checked } : layer
-			)
+		const propertyArray = Object.entries(feature.properties).filter(
+			(property) => property[1]
 		);
+		console.log(propertyArray);
+		return (
+			<section>
+				{propertyArray.map((property, i) => (
+					<p key={property[0]}>{`${property[0]}:${property[1]}`}</p>
+				))}
+			</section>
+		);
+	}
+
+	const onEachFeature = (feature: Feature, layer: any) => {
+		const popupOptions = {
+			minWidth: 250,
+			maxWidth: 500,
+			className: 'popup-classname',
+		};
+		const popupContentNode = <CustomPopup feature={feature} />;
+		const popupContentHtml = ReactDOMServer.renderToString(popupContentNode);
+		layer.bindPopup(popupContentHtml, popupOptions);
 	};
+
+	// const updateCheckStatus = (index: number) => {
+	// 	if (!layers) return;
+	// 	setLayers(
+	// 		layers.map((layer, currentIndex) =>
+	// 			currentIndex === index ? { ...layer, checked: !layer.checked } : layer
+	// 		)
+	// 	);
+	// };
 
 	// const mushroom = L.geoJSON(mapData, { filter: mushroomFilter }).addTo(map);
 	function suppiloFilter(feature: Feature) {
@@ -88,7 +112,7 @@ const App = () => {
 			</header>
 			<div className="wrapper">
 				<main className="content-container">
-					<Sider>
+					{/* <Sider>
 						{layers &&
 							layers.map((checkbox) => (
 								<Switch
@@ -99,7 +123,7 @@ const App = () => {
 									label={checkbox.name}
 								/>
 							))}
-					</Sider>
+					</Sider> */}
 					<MapContainer
 						center={[61.4978, 23.761]}
 						zoom={13}
@@ -113,22 +137,24 @@ const App = () => {
 						{mapData && (
 							<>
 								<LayersControl>
-									<LayersControl.Overlay name="Suppilovahvero">
+									<LayersControl.Overlay name="Suppilovahvero" checked={true}>
 										<LayerGroup>
 											<GeoJSON
 												data={mapData}
 												// key={mapData[0].properties.fid}
 												filter={suppiloFilter}
+												onEachFeature={onEachFeature}
 											/>
 										</LayerGroup>
 									</LayersControl.Overlay>
-									<LayersControl.Overlay name="Keltavahvero">
+									<LayersControl.Overlay name="Keltavahvero" checked={true}>
 										<LayerGroup>
 											<GeoJSON
 												data={mapData}
 												// key={mapData[0].properties.fid}
 												filter={kanttarelliFilter}
 												style={{ color: 'red' }}
+												onEachFeature={onEachFeature}
 											/>
 										</LayerGroup>
 									</LayersControl.Overlay>
