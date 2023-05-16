@@ -6,20 +6,17 @@ import {
 	TileLayer,
 	GeoJSON,
 	MapContainer,
-	useMap,
-	FeatureGroup,
 	FeatureGroupProps,
 	LayerGroup,
+	LayersControl,
 } from 'react-leaflet';
 import Tampere from './assets/tampere-polygon-wgs84.json';
 import L from 'leaflet';
+import { Switch } from './components/Switch';
+import { Sider } from './components/Sider';
 // import Tampere from './services/tampere-metsavarakuviot.json';
 
 const App = () => {
-	const mapRef = useRef();
-	const mapDataRef = useRef();
-	// const map = useMap();
-
 	const [loading, setLoading] = useState<boolean>(false);
 	const [mapIsReady, setMapIsReady] = useState<boolean>(false);
 	const [error, setError] = useState<Error | undefined>(undefined);
@@ -31,14 +28,6 @@ const App = () => {
 		{ id: 0, name: 'Suppilovahvero', checked: true },
 		{ id: 1, name: 'Keltavahvero', checked: true },
 	];
-	// useEffect(() => {
-	// 	const { current = {} } = mapRef;
-	// 	console.log(mapRef);
-	// 	mapRef.current;
-
-	// 	// const tampereGeoJson = new L.GeoJSON(Tampere);
-	// 	// tampereGeoJson.addTo(mapRef);
-	// }, [mapRef]);
 
 	useEffect(() => {
 		try {
@@ -92,48 +81,6 @@ const App = () => {
 		return <div>loading...</div>;
 	}
 
-	type SiderProps = {
-		children: ReactNode;
-	};
-
-	function Sider({ children }: SiderProps) {
-		return (
-			<section className="sider">
-				<div className="content">{children}</div>
-			</section>
-		);
-	}
-
-	function Switch({
-		label,
-		isChecked = false,
-		index,
-		checkHandler,
-	}: {
-		label?: string;
-		isChecked?: boolean;
-		index: number;
-		checkHandler: any;
-	}) {
-		console.log({ isChecked });
-
-		return (
-			<section className="switch-container">
-				{label && <span className="position">{label}</span>}
-				<br />
-				<label className="switch">
-					<input
-						type="checkbox"
-						id={`checkbox-${index}`}
-						checked={isChecked}
-						onChange={checkHandler}
-					/>
-					<span className="slider round"></span>
-				</label>
-			</section>
-		);
-	}
-
 	return (
 		<>
 			<header>
@@ -164,19 +111,29 @@ const App = () => {
 							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 						/>
 						{mapData && (
-							<LayerGroup>
-								<GeoJSON
-									data={mapData}
-									// key={mapData[0].properties.fid}
-									filter={suppiloFilter}
-								/>
-								<GeoJSON
-									data={mapData}
-									// key={mapData[0].properties.fid}
-									filter={kanttarelliFilter}
-									style={{ color: 'red' }}
-								/>
-							</LayerGroup>
+							<>
+								<LayersControl>
+									<LayersControl.Overlay name="Suppilovahvero">
+										<LayerGroup>
+											<GeoJSON
+												data={mapData}
+												// key={mapData[0].properties.fid}
+												filter={suppiloFilter}
+											/>
+										</LayerGroup>
+									</LayersControl.Overlay>
+									<LayersControl.Overlay name="Keltavahvero">
+										<LayerGroup>
+											<GeoJSON
+												data={mapData}
+												// key={mapData[0].properties.fid}
+												filter={kanttarelliFilter}
+												style={{ color: 'red' }}
+											/>
+										</LayerGroup>
+									</LayersControl.Overlay>
+								</LayersControl>
+							</>
 						)}
 					</MapContainer>
 					<section></section>
