@@ -1,51 +1,36 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import './App.scss';
 import 'leaflet/dist/leaflet.css';
 import type { FeatureCollection, Feature } from 'geojson';
+
 import {
 	TileLayer,
 	GeoJSON,
 	MapContainer,
-	FeatureGroupProps,
 	LayerGroup,
 	LayersControl,
-	Popup,
 } from 'react-leaflet';
 import Tampere from './assets/tampere-polygon-wgs84.json';
-import L from 'leaflet';
-import { Switch } from './components/Switch';
-import { Sider } from './components/Sider';
-// import Tampere from './services/tampere-metsavarakuviot.json';
 
 const App = () => {
 	const [loading, setLoading] = useState<boolean>(false);
-	const [mapIsReady, setMapIsReady] = useState<boolean>(false);
-	const [error, setError] = useState<Error | undefined>(undefined);
 	const [mapData, setMapData] = useState<FeatureCollection | null>(null);
-	const [layers, setLayers] =
-		useState<{ id: number; name: string; checked: boolean }[]>();
-
-	const initialLayers = [
-		{ id: 0, name: 'Suppilovahvero', checked: true },
-		{ id: 1, name: 'Keltavahvero', checked: true },
-	];
+	useState<{ id: number; name: string; checked: boolean }[]>();
 
 	useEffect(() => {
 		try {
 			setLoading(true);
 			setMapData(Tampere as FeatureCollection);
-			setLayers(initialLayers);
 			setLoading(false);
 		} catch (error: any) {
 			console.error(`Could not fetch: ${error}`);
 			setLoading(false);
-			setError(error.message);
 		}
 	}, []);
 
 	function CustomPopup({ feature }: { feature: Feature }) {
-		if (!feature || !feature.properties) return;
+		if (!feature || !feature.properties) return <></>;
 
 		const propertyArray = Object.entries(feature.properties).filter(
 			(property) => property[1]
@@ -53,7 +38,7 @@ const App = () => {
 		console.log(propertyArray);
 		return (
 			<section>
-				{propertyArray.map((property, i) => (
+				{propertyArray.map((property) => (
 					<p key={property[0]}>{`${property[0]}:${property[1]}`}</p>
 				))}
 			</section>
@@ -71,16 +56,6 @@ const App = () => {
 		layer.bindPopup(popupContentHtml, popupOptions);
 	};
 
-	// const updateCheckStatus = (index: number) => {
-	// 	if (!layers) return;
-	// 	setLayers(
-	// 		layers.map((layer, currentIndex) =>
-	// 			currentIndex === index ? { ...layer, checked: !layer.checked } : layer
-	// 		)
-	// 	);
-	// };
-
-	// const mushroom = L.geoJSON(mapData, { filter: mushroomFilter }).addTo(map);
 	function suppiloFilter(feature: Feature) {
 		const properties = { ...feature.properties };
 		return (
@@ -127,8 +102,7 @@ const App = () => {
 					<MapContainer
 						center={[61.4978, 23.761]}
 						zoom={13}
-						scrollWheelZoom={false}
-						whenReady={() => setMapIsReady(true)}
+						scrollWheelZoom={true}
 					>
 						<TileLayer
 							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
