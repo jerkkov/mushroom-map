@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import './App.css';
+import './App.scss';
 import 'leaflet/dist/leaflet.css';
 import type { FeatureCollection, Feature } from 'geojson';
 import {
@@ -76,38 +76,61 @@ const App = () => {
 		return <div>loading...</div>;
 	}
 
+	function Sider() {
+		return (
+			<section className="sider">
+				<Switch />
+				<Switch />
+			</section>
+		);
+	}
+
+	function Switch() {
+		return (
+			<label className="switch">
+				<input type="checkbox" />
+				<span className="slider round"></span>
+			</label>
+		);
+	}
+
 	return (
 		<>
-			<h1>Mushroom Map Test</h1>
-			<MapContainer
-				center={[61.4978, 23.761]}
-				zoom={13}
-				scrollWheelZoom={false}
-				ref={mapRef}
-				whenReady={() => setMapIsReady(true)}
-			>
-				<TileLayer
-					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-				/>
-				{mapData && (
-					<LayerGroup>
-						<GeoJSON
-							data={mapData}
-							ref={mapDataRef}
-							// key={mapData[0].properties.fid}
-							filter={suppiloFilter}
+			<header>
+				<h1>Tampere Area Mushroom Map</h1>
+			</header>
+			<div className="wrapper">
+				<main className="content-container">
+					<Sider />
+					<MapContainer
+						center={[61.4978, 23.761]}
+						zoom={13}
+						scrollWheelZoom={false}
+						whenReady={() => setMapIsReady(true)}
+					>
+						<TileLayer
+							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 						/>
-						<GeoJSON
-							data={mapData}
-							ref={mapDataRef}
-							// key={mapData[0].properties.fid}
-							filter={kanttarelliFilter}
-							style={{ color: 'red' }}
-						/>
-					</LayerGroup>
-				)}
-			</MapContainer>
+						{mapData && (
+							<LayerGroup>
+								<GeoJSON
+									data={mapData}
+									// key={mapData[0].properties.fid}
+									filter={suppiloFilter}
+								/>
+								<GeoJSON
+									data={mapData}
+									// key={mapData[0].properties.fid}
+									filter={kanttarelliFilter}
+									style={{ color: 'red' }}
+								/>
+							</LayerGroup>
+						)}
+					</MapContainer>
+					<section></section>
+				</main>
+			</div>
 		</>
 	);
 };
