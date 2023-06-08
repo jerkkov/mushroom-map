@@ -1,3 +1,17 @@
-export const mushroom = {mushrooms:[
-  {id:0, name:"Suppilovahvero", properties:[{MAINTREESPECIES:"3", FERTILITYCLASS: }] }
-]};
+import { Stand, MushroomFilter } from '../types/types';
+
+export const mushroom = {
+	mushrooms: [
+		{
+			suppilovahvero: [
+				{ MAINTREESPECIES: [Stand.MAINTREESPECIES.kuusi] },
+				{
+					FERTILITYCLASS: [
+						Stand.FERTILITYCLASS.tuoreKangasVastaavaSuoJaMustikkaturvekangas,
+					],
+					DEVELOPMENTCLASS: [Stand.DEVELOPMENTCLASS.uudistuskypsaMetsikko],
+				},
+			],
+		},
+	],
+} as MushroomFilter;

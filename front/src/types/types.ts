@@ -1,4 +1,4 @@
-import type { FeatureCollection, Feature, Geometry } from 'geojson';
+import type { FeatureCollection, Feature, Geometry, Polygon } from 'geojson';
 
 export const soilProperties = {
 	keskikarkeaTaiKarkeaKangasmaa: 10,
@@ -89,6 +89,13 @@ export const Stand = {
 	MAINTREESPECIES: mainTreeSpeciesProperties, //Kuvion pääpuulaji
 };
 
+export interface PropertyFilters {
+	FERTILITYCLASS?: FertilityClassProperties[];
+	SOILTYPE?: SoilProperties[];
+	DEVELOPMENTCLASS?: DevelopmentalClassProperties[];
+	MAINTREESPECIES?: MainTreeSpeciesProperties[];
+}
+
 type FertilityClassProperties =
 	typeof fertilityClassProperties[keyof typeof fertilityClassProperties];
 type SoilProperties = typeof soilProperties[keyof typeof soilProperties];
@@ -97,7 +104,7 @@ type DevelopmentalClassProperties =
 type MainTreeSpeciesProperties =
 	typeof mainTreeSpeciesProperties[keyof typeof mainTreeSpeciesProperties];
 
-export interface ForestProperties {
+export interface HabitatProperties {
 	FERTILITYCLASS: FertilityClassProperties;
 	SOILTYPE: SoilProperties;
 	DEVELOPMENTCLASS: DevelopmentalClassProperties;
@@ -105,9 +112,18 @@ export interface ForestProperties {
 }
 
 export interface MushroomFeature extends Feature {
-	properties: ForestProperties;
+	properties: HabitatProperties;
+	geometry: Polygon;
 }
 
 export interface MushroomFeatureCollection extends FeatureCollection {
-	features: Array<Feature<Geometry, ForestProperties>>;
+	features: MushroomFeature[];
+}
+
+export interface MushroomPropertiesFilter {
+	suppilovahvero: PropertyFilters;
+}
+
+export interface MushroomFilter {
+	mushrooms: MushroomPropertiesFilter[];
 }

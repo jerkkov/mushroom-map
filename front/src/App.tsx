@@ -9,14 +9,28 @@ import {
 	MapContainer,
 	LayerGroup,
 	LayersControl,
+	useMap,
+	Polygon,
 } from 'react-leaflet';
 
 import Tampere from './assets/tampere-polygon-wgs84.json';
-import { MushroomFeatureCollection, MushroomFeature }from './types/types';
+import {
+	MushroomFeatureCollection,
+	MushroomFeature,
+	Stand,
+	PropertyFilters,
+	HabitatProperties,
+} from './types/types';
+import { mushroom } from './services/mushroom';
+import { LatLngExpression } from 'leaflet';
 
 const App = () => {
 	const [loading, setLoading] = useState<boolean>(false);
-	const [mapData, setMapData] = useState<MushroomFeatureCollection | null>(null);
+	const [mapData, setMapData] = useState<MushroomFeatureCollection | null>(
+		null
+	);
+	const [layerData, setLayerData] = useState([]);
+
 	useState<{ id: number; name: string; checked: boolean }[]>();
 
 	useEffect(() => {
@@ -36,7 +50,7 @@ const App = () => {
 		const propertyArray = Object.entries(feature.properties).filter(
 			(property) => property[1]
 		);
-		console.log(propertyArray);
+		// console.log(propertyArray);
 		return (
 			<section>
 				{propertyArray.map((property) => (
@@ -60,9 +74,11 @@ const App = () => {
 	function suppiloFilter(feature: MushroomFeature) {
 		const properties = { ...feature.properties };
 		return (
-			properties.MAINTREESPECIES === 2 &&
-			properties.FERTILITYCLASS <= 3 &&
-			properties.DEVELOPMENTCLASS === '04'
+			properties.MAINTREESPECIES === Stand.MAINTREESPECIES.kuusi &&
+			properties.FERTILITYCLASS <=
+				Stand.FERTILITYCLASS.tuoreKangasVastaavaSuoJaMustikkaturvekangas &&
+			properties.DEVELOPMENTCLASS ===
+				Stand.DEVELOPMENTCLASS.uudistuskypsaMetsikko
 		);
 	}
 
@@ -77,10 +93,37 @@ const App = () => {
 		);
 	}
 
-	function addFeatureToLayer () {
-		
-		while()
+	function calculateProbability() {
+		mushroom.mushrooms.map;
 	}
+
+	function propertiesMatch(property: HabitatProperties) {}
+
+	function addProbabilityToFeature() {
+		const featureCollection = mapData?.features;
+		const featureCollectionwithProbabilities = featureCollection?.map(
+			(feature) => {}
+		);
+	}
+
+	function addFeatureToLayer() {
+		// const layer = mapData?.features.map((feature) => (
+		// 	<Polygon positions={feature.geometry.coordinates} />
+		// ));
+		console.log(mapData?.features[0].geometry.coordinates);
+		const layer = (
+			<Polygon
+				positions={mapData?.features[0].geometry.coordinates[0].reverse()}
+			/>
+		);
+		return layer;
+	}
+	console.log(addFeatureToLayer());
+	// function FeatureLayer () {
+	// 	const map = useMap();
+	// 	while()
+	// 	return null
+	// }
 
 	if (!mapData || loading) {
 		return <div>loading...</div>;
@@ -116,7 +159,8 @@ const App = () => {
 						/>
 						{mapData && (
 							<>
-								<LayersControl>
+								{addFeatureToLayer()}
+								{/* <LayersControl>
 									<LayersControl.Overlay name="Suppilovahvero" checked={true}>
 										<LayerGroup>
 											<GeoJSON
@@ -138,7 +182,7 @@ const App = () => {
 											/>
 										</LayerGroup>
 									</LayersControl.Overlay>
-								</LayersControl>
+								</LayersControl> */}
 							</>
 						)}
 					</MapContainer>
