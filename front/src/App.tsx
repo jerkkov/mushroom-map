@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import './App.scss';
 import 'leaflet/dist/leaflet.css';
+import type { FeatureCollection, Feature } from 'geojson';
 
 import {
 	TileLayer,
@@ -10,19 +11,22 @@ import {
 	LayerGroup,
 	LayersControl,
 } from 'react-leaflet';
-
 import Tampere from './assets/tampere-polygon-wgs84.json';
-import { MushroomFeatureCollection, MushroomFeature }from './types/types';
+import {
+	developmentalClassProperties,
+	fertilityClassProperties,
+	mainTreeSpeciesProperties,
+} from './types/types';
 
 const App = () => {
 	const [loading, setLoading] = useState<boolean>(false);
-	const [mapData, setMapData] = useState<MushroomFeatureCollection | null>(null);
+	const [mapData, setMapData] = useState<FeatureCollection | null>(null);
 	useState<{ id: number; name: string; checked: boolean }[]>();
 
 	useEffect(() => {
 		try {
 			setLoading(true);
-			setMapData(Tampere as MushroomFeatureCollection);
+			setMapData(Tampere as FeatureCollection);
 			setLoading(false);
 		} catch (error: any) {
 			console.error(`Could not fetch: ${error}`);
@@ -30,7 +34,7 @@ const App = () => {
 		}
 	}, []);
 
-	function CustomPopup({ feature }: { feature: MushroomFeature }) {
+	function CustomPopup({ feature }: { feature: Feature }) {
 		if (!feature || !feature.properties) return <></>;
 
 		const propertyArray = Object.entries(feature.properties).filter(
@@ -46,7 +50,7 @@ const App = () => {
 		);
 	}
 
-	const onEachFeature = (feature: MushroomFeature, layer: any) => {
+	const onEachFeature = (feature: Feature, layer: any) => {
 		const popupOptions = {
 			minWidth: 250,
 			maxWidth: 500,
@@ -57,29 +61,30 @@ const App = () => {
 		layer.bindPopup(popupContentHtml, popupOptions);
 	};
 
-	function suppiloFilter(feature: MushroomFeature) {
+	function suppiloFilter(feature: Feature) {
 		const properties = { ...feature.properties };
 		return (
-			properties.MAINTREESPECIES === 2 &&
-			properties.FERTILITYCLASS <= 3 &&
-			properties.DEVELOPMENTCLASS === '04'
+			properties.MAINTREESPECIES === mainTreeSpeciesProperties.kuusi &&
+			properties.FERTILITYCLASS <=
+				fertilityClassProperties.tuoreKangasVastaavaSuoJaMustikkaturvekangas &&
+			properties.DEVELOPMENTCLASS ===
+				developmentalClassProperties.uudistuskypsaMetsikko
 		);
 	}
 
-	function kanttarelliFilter(feature: MushroomFeature) {
+	function kanttarelliFilter(feature: Feature) {
 		const properties = { ...feature.properties };
 		return (
-			(properties.MAINTREESPECIES === 4 ||
-				properties.MAINTREESPECIES === 3 ||
-				properties.MAINTREESPECIES === 27) &&
-			(properties.FERTILITYCLASS === 3 || properties.FERTILITYCLASS === 2) &&
-			properties.DEVELOPMENTCLASS === '04'
+			(properties.MAINTREESPECIES === mainTreeSpeciesProperties.rauduskoivu ||
+				properties.MAINTREESPECIES === mainTreeSpeciesProperties.hieskoivu ||
+				properties.MAINTREESPECIES === mainTreeSpeciesProperties.visakoivu) &&
+			(properties.FERTILITYCLASS ===
+				fertilityClassProperties.tuoreKangasVastaavaSuoJaMustikkaturvekangas ||
+				properties.FERTILITYCLASS ===
+					fertilityClassProperties.lehtoLettoJaLehtomainenSuoJaRuohoturvekangas) &&
+			properties.DEVELOPMENTCLASS ===
+				developmentalClassProperties.uudistuskypsaMetsikko
 		);
-	}
-
-	function addFeatureToLayer () {
-		
-		while()
 	}
 
 	if (!mapData || loading) {
