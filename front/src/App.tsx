@@ -17,11 +17,20 @@ import {
 	fertilityClassProperties,
 	mainTreeSpeciesProperties,
 } from './types/types';
+import { mushroomWeights } from './services/MushroomWeights';
+import { Sider } from './components/Sider';
 
 const App = () => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [mapData, setMapData] = useState<FeatureCollection | null>(null);
 	useState<{ id: number; name: string; checked: boolean }[]>();
+	const [habitatWeight, setHabitatWeight] = useState<number>(0);
+	const [suppiloWeight, setSuppiloWeight] = useState<number>(0.0);
+	const [kanttarelliWeight, setKanttarelliWeight] = useState<number>(0.0);
+
+	const suppilovahveroWeight = mushroomWeights.mushrooms.filter(
+		(e) => e.name === 'Suppilovahvero'
+	);
 
 	useEffect(() => {
 		try {
@@ -40,7 +49,7 @@ const App = () => {
 		const propertyArray = Object.entries(feature.properties).filter(
 			(property) => property[1]
 		);
-		console.log(propertyArray);
+		// console.log(propertyArray);
 		return (
 			<section>
 				{propertyArray.map((property) => (
@@ -61,30 +70,75 @@ const App = () => {
 		layer.bindPopup(popupContentHtml, popupOptions);
 	};
 
+	const calculateSuppiloProbability = (data: any) => {
+		let score = 0;
+		let totalCriteria = 3; // We have 3 criteria (MAINTREESPECIES, FERTILITYCLASS, DEVELOPMENTCLASS)
+
+		if (data.properties.MAINTREESPECIES === mainTreeSpeciesProperties.kuusi) {
+			score++;
+		}
+
+		if (
+			data.properties.FERTILITYCLASS <=
+			fertilityClassProperties.tuoreKangasVastaavaSuoJaMustikkaturvekangas
+		) {
+			score++;
+		}
+
+		if (
+			data.properties.DEVELOPMENTCLASS ===
+			developmentalClassProperties.uudistuskypsaMetsikko
+		) {
+			score++;
+		}
+
+		// Calculate probability as a score out of totalCriteria (normalized to 0-1)
+		const probability = score / totalCriteria;
+
+		return probability; // returns a value between 0 and 1
+	};
+
+	const calculateKanttarelliProbability = (data: any) => {
+		let score = 0;
+		let totalCriteria = 3; // We have 3 criteria (MAINTREESPECIES, FERTILITYCLASS, DEVELOPMENTCLASS)
+
+		if (
+			data.properties.MAINTREESPECIES ===
+				mainTreeSpeciesProperties.rauduskoivu ||
+			data.properties.MAINTREESPECIES === mainTreeSpeciesProperties.hieskoivu ||
+			data.properties.MAINTREESPECIES === mainTreeSpeciesProperties.visakoivu
+		) {
+			score++;
+		}
+
+		if (
+			data.FERTILITYCLASS ===
+				fertilityClassProperties.tuoreKangasVastaavaSuoJaMustikkaturvekangas ||
+			data.FERTILITYCLASS ===
+				fertilityClassProperties.lehtoLettoJaLehtomainenSuoJaRuohoturvekangas
+		) {
+			score++;
+		}
+
+		if (
+			data.properties.DEVELOPMENTCLASS ===
+			developmentalClassProperties.uudistuskypsaMetsikko
+		) {
+			score++;
+		}
+
+		// Calculate probability as a score out of totalCriteria (normalized to 0-1)
+		const probability = score / totalCriteria;
+
+		return probability; // returns a value between 0 and 1
+	};
+
 	function suppiloFilter(feature: Feature) {
-		const properties = { ...feature.properties };
-		return (
-			properties.MAINTREESPECIES === mainTreeSpeciesProperties.kuusi &&
-			properties.FERTILITYCLASS <=
-				fertilityClassProperties.tuoreKangasVastaavaSuoJaMustikkaturvekangas &&
-			properties.DEVELOPMENTCLASS ===
-				developmentalClassProperties.uudistuskypsaMetsikko
-		);
+		return calculateSuppiloProbability(feature) > 0.8;
 	}
 
 	function kanttarelliFilter(feature: Feature) {
-		const properties = { ...feature.properties };
-		return (
-			(properties.MAINTREESPECIES === mainTreeSpeciesProperties.rauduskoivu ||
-				properties.MAINTREESPECIES === mainTreeSpeciesProperties.hieskoivu ||
-				properties.MAINTREESPECIES === mainTreeSpeciesProperties.visakoivu) &&
-			(properties.FERTILITYCLASS ===
-				fertilityClassProperties.tuoreKangasVastaavaSuoJaMustikkaturvekangas ||
-				properties.FERTILITYCLASS ===
-					fertilityClassProperties.lehtoLettoJaLehtomainenSuoJaRuohoturvekangas) &&
-			properties.DEVELOPMENTCLASS ===
-				developmentalClassProperties.uudistuskypsaMetsikko
-		);
+		return calculateKanttarelliProbability(feature) > 0.5;
 	}
 
 	if (!mapData || loading) {
@@ -98,18 +152,9 @@ const App = () => {
 			</header>
 			<div className="wrapper">
 				<main className="content-container">
-					{/* <Sider>
-						{layers &&
-							layers.map((checkbox) => (
-								<Switch
-									key={checkbox.name}
-									checkHandler={() => updateCheckStatus(checkbox.id)}
-									isChecked={checkbox.checked}
-									index={checkbox.id}
-									label={checkbox.name}
-								/>
-							))}
-					</Sider> */}
+					<Sider>
+						<p>dsasdasdsd</p>
+					</Sider>
 					<MapContainer
 						center={[61.4978, 23.761]}
 						zoom={13}
