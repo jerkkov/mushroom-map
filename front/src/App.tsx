@@ -19,6 +19,7 @@ import {
 } from './types/types';
 import { mushroomWeights } from './services/MushroomWeights';
 import { Sider } from './components/Sider';
+import { Filter } from './components/Filter';
 
 const App = () => {
 	const [loading, setLoading] = useState<boolean>(false);
@@ -153,6 +154,11 @@ const App = () => {
 			<div className="wrapper">
 				<main className="content-container">
 					<Sider>
+						<Filter
+							label={'Todennäköisyydet'}
+							suppiloProbability={0.5}
+							kanttarelliProbability={0.5}
+						/>
 						<p>dsasdasdsd</p>
 					</Sider>
 					<MapContainer
