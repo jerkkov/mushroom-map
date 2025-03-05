@@ -10,6 +10,7 @@ import {
 	MapContainer,
 	LayerGroup,
 	LayersControl,
+	useMapEvents,
 } from 'react-leaflet';
 import Tampere from './assets/tampere-polygon-wgs84.json';
 import {
@@ -26,23 +27,40 @@ const App = () => {
 	const [mapData, setMapData] = useState<FeatureCollection | null>(null);
 	useState<{ id: number; name: string; checked: boolean }[]>();
 	const [habitatWeight, setHabitatWeight] = useState<number>(0);
-	const [suppiloWeight, setSuppiloWeight] = useState<number>(0.0);
-	const [kanttarelliWeight, setKanttarelliWeight] = useState<number>(0.0);
+	const [suppiloProbability, setSuppiloProbability] = useState<number>(0.8);
+	const [kanttarelliProbability, setKanttarelliProbability] =
+		useState<number>(0.8);
 
-	const suppilovahveroWeight = mushroomWeights.mushrooms.filter(
-		(e) => e.name === 'Suppilovahvero'
-	);
+	const probabilities = {
+		Harva: 0.3,
+		Mahdollinen: 0.6,
+		Todennäköinen: 0.9,
+	};
+
+	const handleSuppiloSelectionChange = (selectedOption: any) => {
+		setSuppiloProbability(probabilities[selectedOption] || 0);
+	};
+
+	const handleKanttarelliSelectionChange = (selectedOption: any) => {
+		setKanttarelliProbability(probabilities[selectedOption] || 0);
+	};
 
 	useEffect(() => {
 		try {
 			setLoading(true);
-			setMapData(Tampere as FeatureCollection);
+
+			if (!mapData) {
+				setMapData(Tampere as FeatureCollection);
+			} else {
+				console.log('re-render');
+				setMapData(Tampere as FeatureCollection);
+			}
 			setLoading(false);
 		} catch (error: any) {
 			console.error(`Could not fetch: ${error}`);
 			setLoading(false);
 		}
-	}, []);
+	}, [suppiloProbability, kanttarelliProbability]);
 
 	function CustomPopup({ feature }: { feature: Feature }) {
 		if (!feature || !feature.properties) return <></>;
@@ -135,16 +153,19 @@ const App = () => {
 	};
 
 	function suppiloFilter(feature: Feature) {
-		return calculateSuppiloProbability(feature) > 0.8;
+		console.log('run suppiloFilter');
+		return calculateSuppiloProbability(feature) > suppiloProbability;
 	}
 
 	function kanttarelliFilter(feature: Feature) {
-		return calculateKanttarelliProbability(feature) > 0.5;
+		return calculateKanttarelliProbability(feature) > kanttarelliProbability;
 	}
 
 	if (!mapData || loading) {
 		return <div>loading...</div>;
 	}
+	console.log('kanttarelli', kanttarelliProbability);
+	console.log('suppilo', suppiloProbability);
 
 	return (
 		<>
@@ -156,8 +177,8 @@ const App = () => {
 					<Sider>
 						<Filter
 							label={'Todennäköisyydet'}
-							suppiloProbability={0.5}
-							kanttarelliProbability={0.5}
+							onSuppiloSelectionChange={handleSuppiloSelectionChange}
+							onKanttarelliSelectionChange={handleKanttarelliSelectionChange}
 						/>
 						<p>dsasdasdsd</p>
 					</Sider>
@@ -176,8 +197,8 @@ const App = () => {
 									<LayersControl.Overlay name="Suppilovahvero" checked={true}>
 										<LayerGroup>
 											<GeoJSON
+												key={suppiloProbability}
 												data={mapData}
-												// key={mapData[0].properties.fid}
 												filter={suppiloFilter}
 												onEachFeature={onEachFeature}
 											/>
@@ -186,8 +207,8 @@ const App = () => {
 									<LayersControl.Overlay name="Keltavahvero" checked={true}>
 										<LayerGroup>
 											<GeoJSON
+												key={kanttarelliProbability}
 												data={mapData}
-												// key={mapData[0].properties.fid}
 												filter={kanttarelliFilter}
 												style={{ color: 'red' }}
 												onEachFeature={onEachFeature}
