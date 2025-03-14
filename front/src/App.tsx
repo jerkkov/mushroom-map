@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import './App.scss';
 import 'leaflet/dist/leaflet.css';
@@ -11,6 +11,7 @@ import {
 	LayerGroup,
 	LayersControl,
 	useMapEvents,
+	LayerGroupProps,
 } from 'react-leaflet';
 import Tampere from './assets/tampere-polygon-wgs84.json';
 import {
@@ -18,7 +19,6 @@ import {
 	fertilityClassProperties,
 	mainTreeSpeciesProperties,
 } from './types/types';
-import { mushroomWeights } from './services/MushroomWeights';
 import { Sider } from './components/Sider';
 import { Filter } from './components/Filter';
 
@@ -26,23 +26,33 @@ const App = () => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [mapData, setMapData] = useState<FeatureCollection | null>(null);
 	useState<{ id: number; name: string; checked: boolean }[]>();
-	const [habitatWeight, setHabitatWeight] = useState<number>(0);
-	const [suppiloProbability, setSuppiloProbability] = useState<number>(0.8);
+	const [suppiloProbability, setSuppiloProbability] = useState<number>(0);
 	const [kanttarelliProbability, setKanttarelliProbability] =
-		useState<number>(0.8);
+		useState<number>(0);
+	const [showKanttarelliFilters, setShowKanttarelliFilters] =
+		useState<boolean>(true);
+	const [showSuppiloFilters, setShowSuppiloFilters] = useState<boolean>(true);
 
-	const probabilities = {
-		Harva: 0.3,
-		Mahdollinen: 0.6,
-		Todennäköinen: 0.9,
-	};
+	const layerToggleRef = useRef(null);
+
+	const probabilityOptions = [
+		{ probability: 0.9, label: 'Todennäköinen' },
+		{ probability: 0.6, label: 'Mahdollinen' },
+		{ probability: 0.3, label: 'Harva' },
+	];
 
 	const handleSuppiloSelectionChange = (selectedOption: any) => {
-		setSuppiloProbability(probabilities[selectedOption] || 0);
+		setSuppiloProbability(
+			probabilityOptions.find((lbl) => lbl.label === selectedOption)
+				?.probability || 0
+		);
 	};
 
 	const handleKanttarelliSelectionChange = (selectedOption: any) => {
-		setKanttarelliProbability(probabilities[selectedOption] || 0);
+		setKanttarelliProbability(
+			probabilityOptions.find((lbl) => lbl.label === selectedOption)
+				?.probability || 0
+		);
 	};
 
 	useEffect(() => {
@@ -55,12 +65,36 @@ const App = () => {
 				console.log('re-render');
 				setMapData(Tampere as FeatureCollection);
 			}
+			if (!suppiloProbability && suppiloProbability === 0) {
+				setSuppiloProbability(probabilityOptions[0].probability);
+			}
+			if (!kanttarelliProbability && kanttarelliProbability === 0) {
+				setKanttarelliProbability(probabilityOptions[0].probability);
+			}
+
 			setLoading(false);
 		} catch (error: any) {
 			console.error(`Could not fetch: ${error}`);
 			setLoading(false);
 		}
 	}, [suppiloProbability, kanttarelliProbability]);
+
+	useEffect(() => {
+		if (!layerToggleRef.current) return;
+		console.log('LAYUERs');
+		const handleCheckBoxChange = () => {
+			setShowSuppiloFilters(
+				layerToggleRef.current._layerControlInputs[0].checked
+			);
+		};
+
+		const checkBoxElement = layerToggleRef.current._layerControlInputs[0];
+		checkBoxElement.addEventListener('change', handleCheckBoxChange);
+
+		return () => {
+			checkBoxElement.removeEventListener('change', handleCheckBoxChange);
+		};
+	}, []);
 
 	function CustomPopup({ feature }: { feature: Feature }) {
 		if (!feature || !feature.properties) return <></>;
@@ -164,9 +198,11 @@ const App = () => {
 	if (!mapData || loading) {
 		return <div>loading...</div>;
 	}
+
 	console.log('kanttarelli', kanttarelliProbability);
 	console.log('suppilo', suppiloProbability);
-
+	console.log('suppiloShow', showSuppiloFilters);
+	console.log('ref', layerToggleRef.current);
 	return (
 		<>
 			<header>
@@ -174,14 +210,19 @@ const App = () => {
 			</header>
 			<div className="wrapper">
 				<main className="content-container">
-					<Sider>
-						<Filter
-							label={'Todennäköisyydet'}
-							onSuppiloSelectionChange={handleSuppiloSelectionChange}
-							onKanttarelliSelectionChange={handleKanttarelliSelectionChange}
-						/>
-						<p>dsasdasdsd</p>
-					</Sider>
+					{!loading && (
+						<Sider>
+							<Filter
+								label={'Todennäköisyydet'}
+								showKanttarelliFilters={showKanttarelliFilters}
+								showSuppiloFilters={showSuppiloFilters}
+								radioLabels={probabilityOptions.map((label) => label.label)}
+								onSuppiloSelectionChange={handleSuppiloSelectionChange}
+								onKanttarelliSelectionChange={handleKanttarelliSelectionChange}
+							/>
+							<p>dsasdasdsd</p>
+						</Sider>
+					)}
 					<MapContainer
 						center={[61.4978, 23.761]}
 						zoom={13}
@@ -191,10 +232,13 @@ const App = () => {
 							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 						/>
-						{mapData && (
+						{!loading && (
 							<>
-								<LayersControl>
-									<LayersControl.Overlay name="Suppilovahvero" checked={true}>
+								<LayersControl ref={layerToggleRef}>
+									<LayersControl.Overlay
+										name="Suppilovahvero"
+										checked={showSuppiloFilters}
+									>
 										<LayerGroup>
 											<GeoJSON
 												key={suppiloProbability}
@@ -204,7 +248,10 @@ const App = () => {
 											/>
 										</LayerGroup>
 									</LayersControl.Overlay>
-									<LayersControl.Overlay name="Keltavahvero" checked={true}>
+									<LayersControl.Overlay
+										name="Keltavahvero"
+										checked={showKanttarelliFilters}
+									>
 										<LayerGroup>
 											<GeoJSON
 												key={kanttarelliProbability}
@@ -219,7 +266,6 @@ const App = () => {
 							</>
 						)}
 					</MapContainer>
-					<section></section>
 				</main>
 			</div>
 		</>

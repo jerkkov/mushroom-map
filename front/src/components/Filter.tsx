@@ -3,22 +3,27 @@ import { RadioGroup } from './RadioGroup';
 
 type FilterProps = {
 	label: string;
-	suppiloProbability: any;
-	kanttarelliProbability: any;
+	radioLabels: string[];
 	onSuppiloSelectionChange: any;
 	onKanttarelliSelectionChange: any;
+	showSuppiloFilters: boolean;
+	showKanttarelliFilters: boolean;
 };
 
 export function Filter({
 	label,
-	suppiloProbability,
-	kanttarelliProbability,
+	showSuppiloFilters,
+	showKanttarelliFilters,
+	radioLabels,
 	onSuppiloSelectionChange,
 	onKanttarelliSelectionChange,
 }: FilterProps) {
-	const [selectedSuppiloOption, setSelectedSuppiloOption] = useState('');
-	const [selectedKanttarelliOption, setSelectedKanttarelliOption] =
-		useState('');
+	const [selectedSuppiloOption, setSelectedSuppiloOption] = useState(
+		radioLabels[0]
+	);
+	const [selectedKanttarelliOption, setSelectedKanttarelliOption] = useState(
+		radioLabels[0]
+	);
 
 	const handleSuppiloChange = (value: any) => {
 		setSelectedSuppiloOption(value);
@@ -28,26 +33,38 @@ export function Filter({
 		setSelectedKanttarelliOption(value);
 		onKanttarelliSelectionChange(value);
 	};
-
+	console.log('radioLabels', radioLabels);
+	console.log(
+		'showSuppilo',
+		showKanttarelliFilters,
+		' | ',
+		'showKanttarelli',
+		showKanttarelliFilters
+	);
 	return (
-		<section className="filter">
-			<h2>{label}</h2>
-			<div className="content">
-				{
-					<RadioGroup
-						label={'Kanttarelli'}
-						selectedOption={selectedKanttarelliOption}
-						onChange={handleKanttarelliChange}
-					/>
-				}
-				{
-					<RadioGroup
-						label={'Suppilovahvero'}
-						selectedOption={selectedSuppiloOption}
-						onChange={handleSuppiloChange}
-					/>
-				}
-			</div>
-		</section>
+		showKanttarelliFilters &&
+		showKanttarelliFilters && (
+			<section className="filter">
+				<h2>{label}</h2>
+				<div className="content">
+					{showSuppiloFilters && (
+						<RadioGroup
+							label={'Suppilovahvero'}
+							radioLabels={radioLabels}
+							selectedOption={selectedSuppiloOption}
+							onChange={handleSuppiloChange}
+						/>
+					)}
+					{showKanttarelliFilters && (
+						<RadioGroup
+							label={'Kanttarelli'}
+							radioLabels={radioLabels}
+							selectedOption={selectedKanttarelliOption}
+							onChange={handleKanttarelliChange}
+						/>
+					)}
+				</div>
+			</section>
+		)
 	);
 }
