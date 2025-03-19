@@ -90,12 +90,12 @@ export const Stand = {
 };
 
 type FertilityClassProperties =
-	typeof fertilityClassProperties[keyof typeof fertilityClassProperties];
-type SoilProperties = typeof soilProperties[keyof typeof soilProperties];
+	(typeof fertilityClassProperties)[keyof typeof fertilityClassProperties];
+type SoilProperties = (typeof soilProperties)[keyof typeof soilProperties];
 type DevelopmentalClassProperties =
-	typeof developmentalClassProperties[keyof typeof developmentalClassProperties];
+	(typeof developmentalClassProperties)[keyof typeof developmentalClassProperties];
 type MainTreeSpeciesProperties =
-	typeof mainTreeSpeciesProperties[keyof typeof mainTreeSpeciesProperties];
+	(typeof mainTreeSpeciesProperties)[keyof typeof mainTreeSpeciesProperties];
 
 export interface ForestProperties {
 	FERTILITYCLASS: FertilityClassProperties;

@@ -21,11 +21,14 @@ import {
 } from './types/types';
 import { Sider } from './components/Sider';
 import { Filter } from './components/Filter';
+import { FavoriteSpot, FavoriteSpotProps } from './components/FavoriteSpot';
 
 const App = () => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [mapData, setMapData] = useState<FeatureCollection | null>(null);
-	useState<{ id: number; name: string; checked: boolean }[]>();
+	const [favoriteSpots, setFavoriteSpots] = useState<FavoriteSpotProps | null>(
+		null
+	);
 	const [suppiloProbability, setSuppiloProbability] = useState<number>(0);
 	const [kanttarelliProbability, setKanttarelliProbability] =
 		useState<number>(0);
@@ -130,14 +133,12 @@ const App = () => {
 		if (data.properties.MAINTREESPECIES === mainTreeSpeciesProperties.kuusi) {
 			score++;
 		}
-
 		if (
 			data.properties.FERTILITYCLASS <=
 			fertilityClassProperties.tuoreKangasVastaavaSuoJaMustikkaturvekangas
 		) {
 			score++;
 		}
-
 		if (
 			data.properties.DEVELOPMENTCLASS ===
 			developmentalClassProperties.uudistuskypsaMetsikko
@@ -154,7 +155,6 @@ const App = () => {
 	const calculateKanttarelliProbability = (data: any) => {
 		let score = 0;
 		let totalCriteria = 3; // We have 3 criteria (MAINTREESPECIES, FERTILITYCLASS, DEVELOPMENTCLASS)
-
 		if (
 			data.properties.MAINTREESPECIES ===
 				mainTreeSpeciesProperties.rauduskoivu ||
@@ -163,7 +163,6 @@ const App = () => {
 		) {
 			score++;
 		}
-
 		if (
 			data.FERTILITYCLASS ===
 				fertilityClassProperties.tuoreKangasVastaavaSuoJaMustikkaturvekangas ||
@@ -172,7 +171,6 @@ const App = () => {
 		) {
 			score++;
 		}
-
 		if (
 			data.properties.DEVELOPMENTCLASS ===
 			developmentalClassProperties.uudistuskypsaMetsikko
@@ -234,6 +232,11 @@ const App = () => {
 						/>
 						{!loading && (
 							<>
+								<FavoriteSpot
+									label="Test"
+									position={[61.4978, 23.761]}
+									saveSpots={setFavoriteSpots}
+								/>
 								<LayersControl ref={layerToggleRef}>
 									<LayersControl.Overlay
 										name="Suppilovahvero"

@@ -21,38 +21,35 @@ export function RadioGroup({
 	console.log(radioLabels[0]);
 	return (
 		visible && (
-			<section className="RadioGroup">
+			<section className="radio-group">
 				<h3>{label}</h3>
-				<label className="">
+				<label>
 					<input
 						type="radio"
 						name={label}
 						value={radioLabels[0]}
 						checked={selectedOption === radioLabels[0]}
 						onChange={handleChange}
-						// className="accent-blue-600"
 					/>
 					<span>{radioLabels[0]}</span>
 				</label>
-				<label className="">
+				<label>
 					<input
 						type="radio"
 						name={label}
 						value={radioLabels[1]}
 						checked={selectedOption === radioLabels[1]}
 						onChange={handleChange}
-						// className="accent-blue-600"
 					/>
 					<span>{radioLabels[1]}</span>
 				</label>
-				<label className="">
+				<label>
 					<input
 						type="radio"
 						name={label}
 						value={radioLabels[2]}
 						checked={selectedOption === radioLabels[2]}
 						onChange={handleChange}
-						// className="accent-blue-600"
 					/>
 					<span>{radioLabels[2]}</span>
 				</label>

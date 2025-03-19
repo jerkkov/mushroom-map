@@ -129,3 +129,12 @@ h1 {
 		border-radius: 50%;
 	}
 }
+
+.radio-group {
+	label {
+		display: block;
+	}
+	input {
+		margin-right: 4px;
+	}
+}
