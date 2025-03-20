@@ -22,6 +22,8 @@ import {
 import { Sider } from './components/Sider';
 import { Filter } from './components/Filter';
 import { FavoriteSpot, FavoriteSpotProps } from './components/FavoriteSpot';
+import { Modal } from './components/Modal';
+import { Dialog } from '@mui/material';
 
 const App = () => {
 	const [loading, setLoading] = useState<boolean>(false);
@@ -35,6 +37,15 @@ const App = () => {
 	const [showKanttarelliFilters, setShowKanttarelliFilters] =
 		useState<boolean>(true);
 	const [showSuppiloFilters, setShowSuppiloFilters] = useState<boolean>(true);
+
+	const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+	const handleModalOpen = () => {
+		setModalOpen(true);
+	};
+	const handleModalClose = () => {
+		setModalOpen(false);
+	};
 
 	const layerToggleRef = useRef(null);
 
@@ -218,7 +229,6 @@ const App = () => {
 								onSuppiloSelectionChange={handleSuppiloSelectionChange}
 								onKanttarelliSelectionChange={handleKanttarelliSelectionChange}
 							/>
-							<p>dsasdasdsd</p>
 						</Sider>
 					)}
 					<MapContainer
@@ -236,6 +246,7 @@ const App = () => {
 									label="Test"
 									position={[61.4978, 23.761]}
 									saveSpots={setFavoriteSpots}
+									handleModalOpen={handleModalOpen}
 								/>
 								<LayersControl ref={layerToggleRef}>
 									<LayersControl.Overlay
@@ -269,6 +280,12 @@ const App = () => {
 							</>
 						)}
 					</MapContainer>
+					<Modal
+						modalOpen={modalOpen}
+						handleClose={handleModalClose}
+						title="TEST"
+						description="descr"
+					/>
 				</main>
 			</div>
 		</>

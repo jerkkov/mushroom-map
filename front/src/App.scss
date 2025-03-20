@@ -38,6 +38,28 @@ h1 {
 	}
 }
 
+.modal {
+	.overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0, 0, 0, 0.6);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		z-index: 1000; /* Ensure it's above the map */
+	}
+	.content {
+		background-color: white;
+		color: black;
+		padding: 20px;
+		border-radius: 10px;
+		z-index: 1001;
+	}
+}
+
 .sider {
 	@media only screen and (max-width: $mobile) {
 		width: $map-width;

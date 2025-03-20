@@ -7,6 +7,7 @@ export type FavoriteSpotProps = {
 	position: any;
 	label: string;
 	saveSpots: any;
+	handleModalOpen: VoidFunction;
 };
 
 const icon = L.icon({
@@ -21,19 +22,23 @@ export function FavoriteSpot({
 	position,
 	label,
 	saveSpots,
+	handleModalOpen,
 }: FavoriteSpotProps) {
 	const map = useMapEvents({
 		click: (e) => {
+			handleModalOpen();
 			const { lat, lng } = e.latlng;
 			L.marker([lat, lng], { icon }).addTo(map);
 			saveSpots([lat, lng]);
 		},
 	});
 	return (
-		<Marker position={position}>
-			<Popup minWidth={90}>
-				<span>{label}</span>
-			</Popup>
-		</Marker>
+		<div style={{ width: 200, height: 200, backgroundColor: '#fffff' }}>
+			<Marker position={position}>
+				<Popup minWidth={90}>
+					<span>{label}</span>
+				</Popup>
+			</Marker>
+		</div>
 	);
 }
