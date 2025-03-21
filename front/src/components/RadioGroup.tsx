@@ -18,7 +18,6 @@ export function RadioGroup({
 	const handleChange = (event: any) => {
 		onChange(event.target.value);
 	};
-	console.log(radioLabels[0]);
 	return (
 		visible && (
 			<section className="radio-group">

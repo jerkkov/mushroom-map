@@ -28,9 +28,7 @@ import { Dialog } from '@mui/material';
 const App = () => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [mapData, setMapData] = useState<FeatureCollection | null>(null);
-	const [favoriteSpots, setFavoriteSpots] = useState<FavoriteSpotProps | null>(
-		null
-	);
+	const [favoriteSpots, setFavoriteSpots] = useState<FavoriteSpotProps[]>([]);
 	const [suppiloProbability, setSuppiloProbability] = useState<number>(0);
 	const [kanttarelliProbability, setKanttarelliProbability] =
 		useState<number>(0);
@@ -208,10 +206,11 @@ const App = () => {
 		return <div>loading...</div>;
 	}
 
-	console.log('kanttarelli', kanttarelliProbability);
-	console.log('suppilo', suppiloProbability);
-	console.log('suppiloShow', showSuppiloFilters);
-	console.log('ref', layerToggleRef.current);
+	// console.log('kanttarelli', kanttarelliProbability);
+	// console.log('suppilo', suppiloProbability);
+	// console.log('suppiloShow', showSuppiloFilters);
+	// console.log('ref', layerToggleRef.current);
+	console.log('spots', favoriteSpots);
 	return (
 		<>
 			<header>
@@ -244,10 +243,11 @@ const App = () => {
 							<>
 								<FavoriteSpot
 									label="Test"
-									position={[61.4978, 23.761]}
 									saveSpots={setFavoriteSpots}
+									favoriteSpots={favoriteSpots}
 									handleModalOpen={handleModalOpen}
 								/>
+
 								<LayersControl ref={layerToggleRef}>
 									<LayersControl.Overlay
 										name="Suppilovahvero"
@@ -283,8 +283,8 @@ const App = () => {
 					<Modal
 						modalOpen={modalOpen}
 						handleClose={handleModalClose}
-						title="TEST"
-						description="descr"
+						title=""
+						description=""
 					/>
 				</main>
 			</div>

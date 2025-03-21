@@ -33,14 +33,6 @@ export function Filter({
 		setSelectedKanttarelliOption(value);
 		onKanttarelliSelectionChange(value);
 	};
-	console.log('radioLabels', radioLabels);
-	console.log(
-		'showSuppilo',
-		showKanttarelliFilters,
-		' | ',
-		'showKanttarelli',
-		showKanttarelliFilters
-	);
 	return (
 		showKanttarelliFilters &&
 		showKanttarelliFilters && (

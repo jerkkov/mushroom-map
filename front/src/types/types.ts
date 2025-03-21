@@ -1,4 +1,5 @@
 import type { FeatureCollection, Feature, Geometry } from 'geojson';
+import { LatLngExpression } from 'leaflet';
 
 export const soilProperties = {
 	keskikarkeaTaiKarkeaKangasmaa: 10,
@@ -111,3 +112,14 @@ export interface MushroomFeature extends Feature {
 export interface MushroomFeatureCollection extends FeatureCollection {
 	features: Array<Feature<Geometry, ForestProperties>>;
 }
+
+export type suppilovahvero = 'Suppilovahvero';
+export type kanttarelli = 'Kanttarelli';
+
+export type FavoriteSpot = {
+	id: string;
+	position: LatLngExpression;
+	label: string;
+	description?: string;
+	mushroomType?: suppilovahvero | kanttarelli;
+};
