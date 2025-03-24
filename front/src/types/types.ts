@@ -123,3 +123,8 @@ export type FavoriteSpot = {
 	description?: string;
 	mushroomType?: suppilovahvero | kanttarelli;
 };
+
+export type ModalData = {
+	title: string;
+	description: string;
+};

@@ -1,0 +1,43 @@
+import { createContext, useContext, useState } from 'react';
+import '../App.scss';
+
+export const MAPSTATE = {
+	loading: 'LOADING',
+	ready: 'READY',
+	error: 'ERROR',
+};
+
+export type MapState = (typeof MAPSTATE)[keyof typeof MAPSTATE];
+
+const MushroomMapContext = createContext<any | undefined>(undefined);
+
+export default function MushroomMapProvider({ children }: any) {
+	const [mapState, setMapState] = useState<MapState | undefined>(undefined);
+	const [suppiloProbability, setSuppiloProbability] = useState<number>(0.9);
+	const [kanttarelliProbability, setKanttarelliProbability] =
+		useState<number>(0.9);
+
+	return (
+		<MushroomMapContext.Provider
+			value={{
+				mapState,
+				suppiloProbability,
+				kanttarelliProbability,
+				setMapState,
+				setSuppiloProbability,
+				setKanttarelliProbability,
+			}}
+		>
+			{children}
+		</MushroomMapContext.Provider>
+	);
+}
+
+export const useMushroomMap = () => {
+	const context = useContext(MushroomMapContext);
+	if (!context)
+		throw new Error(
+			'useMushroomMap must be used withing a MushroomMapProvider'
+		);
+	return context;
+};
