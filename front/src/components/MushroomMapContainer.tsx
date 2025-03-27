@@ -12,7 +12,7 @@ import {
 import Tampere from '../assets/tampere-polygon-wgs84.json';
 import { MAPSTATE, useMushroomMap } from './MushroomMapProvider';
 
-const probabilityOptions = [
+export const probabilityOptions = [
 	{ probability: 0.9, label: 'Todennäköinen' },
 	{ probability: 0.6, label: 'Mahdollinen' },
 	{ probability: 0.3, label: 'Harva' },
