@@ -11,24 +11,17 @@ import {
 } from '../types/types';
 import Tampere from '../assets/tampere-polygon-wgs84.json';
 import { MAPSTATE, useMushroomMap } from './MushroomMapProvider';
-
-export const probabilityOptions = [
-	{ probability: 0.9, label: 'Todennäköinen' },
-	{ probability: 0.6, label: 'Mahdollinen' },
-	{ probability: 0.3, label: 'Harva' },
-];
+import { probabilityOptions, useFilter } from './FilterProvider';
 
 export default function MushroomMapContainer() {
 	const {
-		suppiloProbability,
-		kanttarelliProbability,
 		setMapState,
-		setSuppiloProbability,
-		setKanttarelliProbability,
 	} = useMushroomMap();
 	const [locationData, setLocationData] = useState<FeatureCollection | null>(
 		null
 	);
+
+	const { suppiloProbability, kanttarelliProbability, setSuppiloProbability, setKanttarelliProbability } = useFilter();
 
 	useEffect(
 		() => {

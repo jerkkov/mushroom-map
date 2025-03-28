@@ -6,6 +6,10 @@ import { ModalProvider } from './components/ModalProvider';
 import MushroomMapProvider from './components/MushroomMapProvider';
 import MushroomMapContainer from './components/MushroomMapContainer';
 import { FavoriteSpotContainer } from './components/FavoriteSpotContainer';
+import { Sider } from './components/Sider';
+import { Filter } from './components/Filter';
+import { FilterContainer } from './components/FilterContainer';
+import { FilterProvider } from './components/FilterProvider';
 
 const App = () => {
 	// const [favoriteSpots, setFavoriteSpots] = useState<FavoriteSpotProps[]>([]);
@@ -63,22 +67,17 @@ const App = () => {
 			</header>
 			<div className="wrapper">
 				<main className="content-container">
-					{/* <Sider>
-							<Filter
-								label={'Todennäköisyydet'}
-								showKanttarelliFilters={showKanttarelliFilters}
-								showSuppiloFilters={showSuppiloFilters}
-								radioLabels={probabilityOptions.map((label) => label.label)}
-								onSuppiloSelectionChange={handleSuppiloSelectionChange}
-								onKanttarelliSelectionChange={handleKanttarelliSelectionChange}
-							/>
-						</Sider> */}
-					<ModalProvider>
-						<ModalContainer />
-						<MushroomMapProvider>
-							<MushroomMapContainer />
-						</MushroomMapProvider>
-					</ModalProvider>
+					<FilterProvider>
+						<Sider>
+								<FilterContainer />
+							</Sider>
+						<ModalProvider>
+							<ModalContainer />
+							<MushroomMapProvider>
+								<MushroomMapContainer />
+							</MushroomMapProvider>
+						</ModalProvider>
+					</FilterProvider>
 				</main>
 			</div>
 		</>

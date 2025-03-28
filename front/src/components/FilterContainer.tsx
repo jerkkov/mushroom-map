@@ -1,21 +1,12 @@
 import { useState } from 'react';
-import { RadioGroup } from './RadioGroup';
-import { probabilityOptions } from './MushroomMapContainer';
-import { useMushroomMap } from './MushroomMapProvider';
+import { ProbabilityLabel, ProbabilityOption, probabilityOptions } from './FilterProvider';
+import { useFilter } from './FilterProvider';
+import { Filter } from './Filter';
 
-const radioLabels = probabilityOptions.map((option) => option.label);
+const radioLabels = probabilityOptions.map((option: ProbabilityOption) => option.label);
 
-type FilterProps = {
-	label: string;
-	onSuppiloSelectionChange: any;
-	onKanttarelliSelectionChange: any;
-};
 
-export function FilterContainer({
-	label,
-	onSuppiloSelectionChange,
-	onKanttarelliSelectionChange,
-}: FilterProps) {
+export function FilterContainer({}) {
 	const [selectedSuppiloOption, setSelectedSuppiloOption] = useState(
 		radioLabels[0]
 	);
@@ -23,32 +14,36 @@ export function FilterContainer({
 		radioLabels[0]
 	);
 
-	use
-	const { setSuppiloProbability, setKanttarelliProbability } = useMushroomMap();
-			const handleSuppiloSelectionChange = (selectedOption: any) => {
+	const { setSuppiloProbability, setKanttarelliProbability } = useFilter();
+	
+	const handleSuppiloSelectionChange = (selectedOption: ProbabilityLabel) => {
 		setSuppiloProbability(
-			probabilityOptions.find((lbl) => lbl.label === selectedOption)
+			probabilityOptions.find((option: ProbabilityOption) => option.label === selectedOption)
 				?.probability || 0
 		);
 	};
 
-	const handleKanttarelliSelectionChange = (selectedOption: any) => {
+	const handleKanttarelliSelectionChange = (selectedOption: ProbabilityLabel) => {
 		setKanttarelliProbability(
-			probabilityOptions.find((lbl) => lbl.label === selectedOption)
+			probabilityOptions.find((option: ProbabilityOption) => option.label === selectedOption)
 				?.probability || 0
 		);
 	};
-
 
 	const handleSuppiloChange = (value: any) => {
 		setSelectedSuppiloOption(value);
-		onSuppiloSelectionChange(value);
+		handleSuppiloSelectionChange(value)
 	};
 	const handleKanttarelliChange = (value: any) => {
 		setSelectedKanttarelliOption(value);
-		onKanttarelliSelectionChange(value);
+		handleKanttarelliSelectionChange(value)
 	};
 	return (
-{<FIlter handleSuppiloChange={} handleKanttarelliChange= />}
+<Filter 
+	onSuppiloSelectionChange={handleSuppiloChange} 
+	onKanttarelliSelectionChange={handleKanttarelliChange} 
+	selectedSuppiloOption={selectedSuppiloOption}
+	selectedKanttarelliOption={selectedKanttarelliOption} 
+/>
 	);
 }

@@ -1,16 +1,16 @@
-import { ChangeEventHandler, useState } from 'react';
+import { ChangeEventHandler } from 'react';
+import { ProbabilityLabel } from './FilterProvider';
 type RadioGroupProps = {
 	label: string;
-	probability?: number;
-	radioLabels?: string[];
+	radioLabels: ProbabilityLabel[];
 	visible?: boolean;
-	selectedOption: string;
+	selectedOption: ProbabilityLabel;
 	onChange: ChangeEventHandler;
 };
 
 export function RadioGroup({
 	label,
-	radioLabels = ['', '', ''],
+	radioLabels,
 	visible = true,
 	selectedOption,
 	onChange,

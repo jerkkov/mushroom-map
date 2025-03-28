@@ -13,19 +13,12 @@ const MushroomMapContext = createContext<any | undefined>(undefined);
 
 export default function MushroomMapProvider({ children }: any) {
 	const [mapState, setMapState] = useState<MapState | undefined>(undefined);
-	const [suppiloProbability, setSuppiloProbability] = useState<number>(0.9);
-	const [kanttarelliProbability, setKanttarelliProbability] =
-		useState<number>(0.9);
 
 	return (
 		<MushroomMapContext.Provider
 			value={{
 				mapState,
-				suppiloProbability,
-				kanttarelliProbability,
 				setMapState,
-				setSuppiloProbability,
-				setKanttarelliProbability,
 			}}
 		>
 			{children}

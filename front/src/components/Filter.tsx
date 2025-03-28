@@ -1,41 +1,38 @@
-import { useState } from 'react';
 import { RadioGroup } from './RadioGroup';
-import { probabilityOptions } from './MushroomMapContainer';
+import { ProbabilityLabel, ProbabilityOption, probabilityOptions } from './FilterProvider';
 
-const radioLabels = probabilityOptions.map((option) => option.label);
+const radioLabels = probabilityOptions.map((option: ProbabilityOption) => option.label);
 
 type FilterProps = {
-	label: string;
-	selectedSuppiloOption: any;
-	selectedKanttarelliOption: any;
+	selectedSuppiloOption: ProbabilityLabel;
+	selectedKanttarelliOption: ProbabilityLabel;
 	onSuppiloSelectionChange: any;
 	onKanttarelliSelectionChange: any;
 };
 
 export function Filter({
-	label,
 	selectedSuppiloOption,
 	selectedKanttarelliOption,
 	onSuppiloSelectionChange,
 	onKanttarelliSelectionChange,
 }: FilterProps) {
-	};
+	;
 	return (
 		<section className="filter">
-			<h2>{label}</h2>
+			<h2>Todennäköisyydet</h2>
 			<div className="content">
 				<RadioGroup
 					label={'Suppilovahvero'}
 					radioLabels={radioLabels}
 					selectedOption={selectedSuppiloOption}
-					onChange={handleSuppiloChange}
+					onChange={onSuppiloSelectionChange}
 				/>
 
 				<RadioGroup
 					label={'Kanttarelli'}
 					radioLabels={radioLabels}
 					selectedOption={selectedKanttarelliOption}
-					onChange={handleKanttarelliChange}
+					onChange={onKanttarelliSelectionChange}
 				/>
 			</div>
 		</section>

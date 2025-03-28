@@ -10,6 +10,7 @@ import {
 
 import { MAPSTATE, useMushroomMap } from './MushroomMapProvider';
 import { FavoriteSpotContainer } from './FavoriteSpotContainer';
+import { useFilter } from './FilterProvider';
 
 export default function MushroomMap({
 	locationData,
@@ -19,6 +20,7 @@ export default function MushroomMap({
 }: /* 	layerToggleRef, */
 any) {
 	const { setMapState } = useMushroomMap();
+	const { suppiloProbability, kanttarelliProbability } = useFilter();
 	return (
 		<MapContainer
 			whenReady={() => setMapState(MAPSTATE.ready)}
@@ -34,7 +36,7 @@ any) {
 				<LayersControl.Overlay name="Suppilovahvero" checked={true}>
 					<LayerGroup>
 						<GeoJSON
-							key={locationData}
+							key={suppiloProbability}
 							data={locationData}
 							filter={suppiloFilter}
 							onEachFeature={onEachFeature}
@@ -44,7 +46,7 @@ any) {
 				<LayersControl.Overlay name="Keltavahvero" checked={true}>
 					<LayerGroup>
 						<GeoJSON
-							key={locationData}
+							key={kanttarelliProbability}
 							data={locationData}
 							filter={kanttarelliFilter}
 							style={{ color: 'red' }}
