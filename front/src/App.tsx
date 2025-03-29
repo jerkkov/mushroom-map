@@ -1,134 +1,65 @@
-import { useEffect, useState } from 'react';
-import ReactDOMServer from 'react-dom/server';
 import './App.scss';
 import 'leaflet/dist/leaflet.css';
 
-import {
-	TileLayer,
-	GeoJSON,
-	MapContainer,
-	LayerGroup,
-	LayersControl,
-	useMap,
-	Polygon,
-} from 'react-leaflet';
-
-import Tampere from './assets/tampere-polygon-wgs84.json';
-import {
-	MushroomFeatureCollection,
-	MushroomFeature,
-	Stand,
-	PropertyFilters,
-	HabitatProperties,
-} from './types/types';
-import { mushroom } from './services/mushroom';
-import { LatLngExpression } from 'leaflet';
+import { ModalContainer } from './components/ModalContainer';
+import { ModalProvider } from './components/ModalProvider';
+import MushroomMapProvider from './components/MushroomMapProvider';
+import MushroomMapContainer from './components/MushroomMapContainer';
+import { FavoriteSpotContainer } from './components/FavoriteSpotContainer';
+import { Sider } from './components/Sider';
+import { Filter } from './components/Filter';
+import { FilterContainer } from './components/FilterContainer';
+import { FilterProvider } from './components/FilterProvider';
 
 const App = () => {
-	const [loading, setLoading] = useState<boolean>(false);
-	const [mapData, setMapData] = useState<MushroomFeatureCollection | null>(
-		null
-	);
-	const [layerData, setLayerData] = useState([]);
+	// const [favoriteSpots, setFavoriteSpots] = useState<FavoriteSpotProps[]>([]);
 
-	useState<{ id: number; name: string; checked: boolean }[]>();
+	/* 	const [showKanttarelliFilters, setShowKanttarelliFilters] =
+		useState<boolean>(true); */
+	// const [showSuppiloFilters, setShowSuppiloFilters] = useState<boolean>(true);
+	// const layerToggleRef = useRef(null);
 
-	useEffect(() => {
-		try {
-			setLoading(true);
-			setMapData(Tampere as MushroomFeatureCollection);
-			setLoading(false);
-		} catch (error: any) {
-			console.error(`Could not fetch: ${error}`);
-			setLoading(false);
-		}
-	}, []);
-
-	function CustomPopup({ feature }: { feature: MushroomFeature }) {
-		if (!feature || !feature.properties) return <></>;
-
-		const propertyArray = Object.entries(feature.properties).filter(
-			(property) => property[1]
+	/* 	const handleSuppiloSelectionChange = (selectedOption: any) => {
+		setSuppiloProbability(
+			probabilityOptions.find((lbl) => lbl.label === selectedOption)
+				?.probability || 0
 		);
-		// console.log(propertyArray);
-		return (
-			<section>
-				{propertyArray.map((property) => (
-					<p key={property[0]}>{`${property[0]}:${property[1]}`}</p>
-				))}
-			</section>
-		);
-	}
-
-	const onEachFeature = (feature: MushroomFeature, layer: any) => {
-		const popupOptions = {
-			minWidth: 250,
-			maxWidth: 500,
-			className: 'popup-classname',
-		};
-		const popupContentNode = <CustomPopup feature={feature} />;
-		const popupContentHtml = ReactDOMServer.renderToString(popupContentNode);
-		layer.bindPopup(popupContentHtml, popupOptions);
 	};
 
-	function suppiloFilter(feature: MushroomFeature) {
-		const properties = { ...feature.properties };
-		return (
-			properties.MAINTREESPECIES === Stand.MAINTREESPECIES.kuusi &&
-			properties.FERTILITYCLASS <=
-				Stand.FERTILITYCLASS.tuoreKangasVastaavaSuoJaMustikkaturvekangas &&
-			properties.DEVELOPMENTCLASS ===
-				Stand.DEVELOPMENTCLASS.uudistuskypsaMetsikko
+	const handleKanttarelliSelectionChange = (selectedOption: any) => {
+		setKanttarelliProbability(
+			probabilityOptions.find((lbl) => lbl.label === selectedOption)
+				?.probability || 0
 		);
-	}
+	};
+ */
 
-	function kanttarelliFilter(feature: MushroomFeature) {
-		const properties = { ...feature.properties };
-		return (
-			(properties.MAINTREESPECIES === 4 ||
-				properties.MAINTREESPECIES === 3 ||
-				properties.MAINTREESPECIES === 27) &&
-			(properties.FERTILITYCLASS === 3 || properties.FERTILITYCLASS === 2) &&
-			properties.DEVELOPMENTCLASS === '04'
-		);
-	}
+	/* 	useEffect(() => {
+		if (!layerToggleRef.current) return;
+		console.log('LAYUERs');
+		const handleCheckBoxChange = () => {
+			setShowSuppiloFilters(
+				layerToggleRef.current._layerControlInputs[0].checked
+			);
+		};
 
-	function calculateProbability() {
-		mushroom.mushrooms.map;
-	}
+		const checkBoxElement = layerToggleRef.current._layerControlInputs[0];
+		checkBoxElement.addEventListener('change', handleCheckBoxChange);
 
-	function propertiesMatch(property: HabitatProperties) {}
+		return () => {
+			checkBoxElement.removeEventListener('change', handleCheckBoxChange);
+		};
+	}, []); */
 
-	function addProbabilityToFeature() {
-		const featureCollection = mapData?.features;
-		const featureCollectionwithProbabilities = featureCollection?.map(
-			(feature) => {}
-		);
-	}
-
-	function addFeatureToLayer() {
-		// const layer = mapData?.features.map((feature) => (
-		// 	<Polygon positions={feature.geometry.coordinates} />
-		// ));
-		console.log(mapData?.features[0].geometry.coordinates);
-		const layer = (
-			<Polygon
-				positions={mapData?.features[0].geometry.coordinates[0].reverse()}
-			/>
-		);
-		return layer;
-	}
-	console.log(addFeatureToLayer());
-	// function FeatureLayer () {
-	// 	const map = useMap();
-	// 	while()
-	// 	return null
+	// if (!mapState || mapState.loading) {
+	// 	return <div>loading...</div>;
 	// }
 
-	if (!mapData || loading) {
-		return <div>loading...</div>;
-	}
-
+	// console.log('kanttarelli', kanttarelliProbability);
+	// console.log('suppilo', suppiloProbability);
+	// console.log('suppiloShow', showSuppiloFilters);
+	// console.log('ref', layerToggleRef.current);
+	// console.log('spots', favoriteSpots);
 	return (
 		<>
 			<header>
@@ -136,57 +67,17 @@ const App = () => {
 			</header>
 			<div className="wrapper">
 				<main className="content-container">
-					{/* <Sider>
-						{layers &&
-							layers.map((checkbox) => (
-								<Switch
-									key={checkbox.name}
-									checkHandler={() => updateCheckStatus(checkbox.id)}
-									isChecked={checkbox.checked}
-									index={checkbox.id}
-									label={checkbox.name}
-								/>
-							))}
-					</Sider> */}
-					<MapContainer
-						center={[61.4978, 23.761]}
-						zoom={13}
-						scrollWheelZoom={true}
-					>
-						<TileLayer
-							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-						/>
-						{mapData && (
-							<>
-								{addFeatureToLayer()}
-								{/* <LayersControl>
-									<LayersControl.Overlay name="Suppilovahvero" checked={true}>
-										<LayerGroup>
-											<GeoJSON
-												data={mapData}
-												// key={mapData[0].properties.fid}
-												filter={suppiloFilter}
-												onEachFeature={onEachFeature}
-											/>
-										</LayerGroup>
-									</LayersControl.Overlay>
-									<LayersControl.Overlay name="Keltavahvero" checked={true}>
-										<LayerGroup>
-											<GeoJSON
-												data={mapData}
-												// key={mapData[0].properties.fid}
-												filter={kanttarelliFilter}
-												style={{ color: 'red' }}
-												onEachFeature={onEachFeature}
-											/>
-										</LayerGroup>
-									</LayersControl.Overlay>
-								</LayersControl> */}
-							</>
-						)}
-					</MapContainer>
-					<section></section>
+					<FilterProvider>
+						<Sider>
+							<FilterContainer />
+						</Sider>
+						<ModalProvider>
+							<ModalContainer />
+							<MushroomMapProvider>
+								<MushroomMapContainer />
+							</MushroomMapProvider>
+						</ModalProvider>
+					</FilterProvider>
 				</main>
 			</div>
 		</>

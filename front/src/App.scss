@@ -38,6 +38,10 @@ h1 {
 	}
 }
 
+.modal {
+	display: block;
+}
+
 .sider {
 	@media only screen and (max-width: $mobile) {
 		width: $map-width;
@@ -127,5 +131,14 @@ h1 {
 
 	.slider.round:before {
 		border-radius: 50%;
+	}
+}
+
+.radio-group {
+	label {
+		display: block;
+	}
+	input {
+		margin-right: 4px;
 	}
 }

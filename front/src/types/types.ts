@@ -1,4 +1,5 @@
 import type { FeatureCollection, Feature, Geometry, Polygon } from 'geojson';
+import { LatLngExpression } from 'leaflet';
 
 export const soilProperties = {
 	keskikarkeaTaiKarkeaKangasmaa: 10,
@@ -97,12 +98,12 @@ export interface PropertyFilters {
 }
 
 type FertilityClassProperties =
-	typeof fertilityClassProperties[keyof typeof fertilityClassProperties];
-type SoilProperties = typeof soilProperties[keyof typeof soilProperties];
+	(typeof fertilityClassProperties)[keyof typeof fertilityClassProperties];
+type SoilProperties = (typeof soilProperties)[keyof typeof soilProperties];
 type DevelopmentalClassProperties =
-	typeof developmentalClassProperties[keyof typeof developmentalClassProperties];
+	(typeof developmentalClassProperties)[keyof typeof developmentalClassProperties];
 type MainTreeSpeciesProperties =
-	typeof mainTreeSpeciesProperties[keyof typeof mainTreeSpeciesProperties];
+	(typeof mainTreeSpeciesProperties)[keyof typeof mainTreeSpeciesProperties];
 
 export interface HabitatProperties {
 	FERTILITYCLASS: FertilityClassProperties;
@@ -127,3 +128,19 @@ export interface MushroomPropertiesFilter {
 export interface MushroomFilter {
 	mushrooms: MushroomPropertiesFilter[];
 }
+
+export type suppilovahvero = 'Suppilovahvero';
+export type kanttarelli = 'Kanttarelli';
+
+export type FavoriteSpot = {
+	id: string;
+	position: LatLngExpression;
+	label: string;
+	description?: string;
+	mushroomType?: suppilovahvero | kanttarelli;
+};
+
+export type ModalData = {
+	title: string;
+	description: string;
+};
