@@ -8,45 +8,43 @@ import {
 	developmentalClassProperties,
 	fertilityClassProperties,
 	mainTreeSpeciesProperties,
+	MushroomFeatureCollection,
 } from '../types/types';
 import Tampere from '../assets/tampere-polygon-wgs84.json';
 import { MAPSTATE, useMushroomMap } from './MushroomMapProvider';
 import { probabilityOptions, useFilter } from './FilterProvider';
 
 export default function MushroomMapContainer() {
+	const { setMapState } = useMushroomMap();
+	const [locationData, setLocationData] =
+		useState<MushroomFeatureCollection | null>(null);
+
 	const {
-		setMapState,
-	} = useMushroomMap();
-	const [locationData, setLocationData] = useState<FeatureCollection | null>(
-		null
-	);
+		suppiloProbability,
+		kanttarelliProbability,
+		setSuppiloProbability,
+		setKanttarelliProbability,
+	} = useFilter();
 
-	const { suppiloProbability, kanttarelliProbability, setSuppiloProbability, setKanttarelliProbability } = useFilter();
+	console.log('suppiloProbabilityMMCOntainer', suppiloProbability);
 
-	useEffect(
-		() => {
-			try {
-				if (!locationData) {
-					setLocationData(Tampere as FeatureCollection);
-					console.log('locationDataSET', locationData);
-				}
-				if (!suppiloProbability && suppiloProbability === 0) {
-					setSuppiloProbability(probabilityOptions[0].probability);
-				}
-				if (!kanttarelliProbability && kanttarelliProbability === 0) {
-					setKanttarelliProbability(probabilityOptions[0].probability);
-				}
-
-				// setMapState(MAPSTATE.ready);
-			} catch (error: any) {
-				console.error(`Could not fetch: ${error}`);
-				setMapState(MAPSTATE.error);
+	useEffect(() => {
+		try {
+			if (!locationData) {
+				setLocationData(Tampere as MushroomFeatureCollection);
+				console.log('locationDataSET', locationData);
 			}
-		},
-		[
-			/* suppiloProbability, kanttarelliProbability */
-		]
-	);
+			if (!suppiloProbability) {
+				setSuppiloProbability(probabilityOptions[0].probability);
+			}
+			if (!kanttarelliProbability) {
+				setKanttarelliProbability(probabilityOptions[0].probability);
+			}
+		} catch (error: any) {
+			console.error(`Could not fetch: ${error}`);
+			setMapState(MAPSTATE.error);
+		}
+	}, [suppiloProbability, kanttarelliProbability]);
 
 	const CustomPopup = ({ feature }: { feature: Feature }) => {
 		if (!feature || !feature.properties) return <></>;

@@ -14,6 +14,8 @@ const MushroomMapContext = createContext<any | undefined>(undefined);
 export default function MushroomMapProvider({ children }: any) {
 	const [mapState, setMapState] = useState<MapState | undefined>(undefined);
 
+	console.log('mapState:', mapState);
+
 	return (
 		<MushroomMapContext.Provider
 			value={{
