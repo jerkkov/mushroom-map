@@ -3,13 +3,13 @@ import 'leaflet/dist/leaflet.css';
 
 import { ModalContainer } from './components/ModalContainer';
 import { ModalProvider } from './components/ModalProvider';
-import MushroomMapProvider from './components/MushroomMapProvider';
-import MushroomMapContainer from './components/MushroomMapContainer';
 import { FavoriteSpotContainer } from './components/FavoriteSpotContainer';
 import { Sider } from './components/Sider';
 import { Filter } from './components/Filter';
 import { FilterContainer } from './components/FilterContainer';
 import { FilterProvider } from './components/FilterProvider';
+import MushroomMapContainer from './components/MushroomMapContainer';
+import MushroomMapProvider from './components/MushroomMapProvider';
 
 const App = () => {
 	// const [favoriteSpots, setFavoriteSpots] = useState<FavoriteSpotProps[]>([]);
@@ -60,6 +60,7 @@ const App = () => {
 	// console.log('suppiloShow', showSuppiloFilters);
 	// console.log('ref', layerToggleRef.current);
 	// console.log('spots', favoriteSpots);
+
 	return (
 		<>
 			<header>
@@ -68,12 +69,12 @@ const App = () => {
 			<div className="wrapper">
 				<main className="content-container">
 					<FilterProvider>
-						<Sider>
-							<FilterContainer />
-						</Sider>
 						<ModalProvider>
 							<ModalContainer />
 							<MushroomMapProvider>
+								<Sider>
+									<FilterContainer />
+								</Sider>
 								<MushroomMapContainer />
 							</MushroomMapProvider>
 						</ModalProvider>

@@ -21,6 +21,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { ModalDataProps } from './ModalProvider';
+import { useFormInput } from '../hooks/useFormInput';
 
 // function form () {
 // 	<label>
@@ -45,6 +46,8 @@ export default function Modal({
 	handleSubmit,
 }: ModalDataProps) {
 	// if (open === false) return;
+	const title = useFormInput('');
+	const description = useFormInput('');
 	console.log(open);
 	return editing ? (
 		<Dialog open={open}>
@@ -68,11 +71,15 @@ export default function Modal({
 				>
 					<FormControl variant="standard">
 						<InputLabel htmlFor="title">Otsikko</InputLabel>
-						<Input id="title" value={modalData.title ?? ''} />
+						<Input id="title" onChange={title.onChange} value={title.value} />
 					</FormControl>
 					<FormControl variant="standard">
 						<InputLabel htmlFor="description">Kuvaus</InputLabel>
-						<Input id="description" value={modalData.description ?? ''} />
+						<Input
+							id="description"
+							onChange={description.onChange}
+							value={description.value}
+						/>
 					</FormControl>
 				</Box>
 			</DialogContent>

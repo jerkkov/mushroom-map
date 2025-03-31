@@ -4,6 +4,7 @@ import L, { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useModal } from './ModalProvider';
 import { FavoriteSpot } from './FavoriteSpot';
+import { useMushroomMap } from './MushroomMapProvider';
 
 // export type ModalProps = {
 // 	modalOpen: boolean;
@@ -46,16 +47,24 @@ export function FavoriteSpotContainer() {
 		handleSubmit,
 	} = useModal();
 
+	const { isAddFavoriteSpotsEnabled } = useMushroomMap();
+
 	const [position, setPosition] = useState<LatLngExpression | undefined>();
+
 	const map = useMapEvents({
 		click: (e) => {
-			handleModalOpen();
 			const { lat, lng } = e.latlng;
-			setPosition([lat, lng]);
 
-			L.marker([lat, lng], { icon }).addTo(map);
+			if (position && [lat, lng].every((pos, i) => pos === position[i]))
+				setPosition([lat, lng]);
+
+			if (isAddFavoriteSpotsEnabled) {
+				handleModalOpen();
+				L.marker([lat, lng], { icon }).addTo(map);
+			}
 		},
 	});
-	if (!position) return;
+	// if (!position) return;
+	// console.log(position);
 	return <FavoriteSpot position={position} label="TEST" />;
 }
