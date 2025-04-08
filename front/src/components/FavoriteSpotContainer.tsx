@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import { useModal } from './ModalProvider';
 import { FavoriteSpot } from './FavoriteSpot';
 import { useMushroomMap } from './MushroomMapProvider';
+import { FavoriteSpot as FavoriteSpotType } from '../types/types';
 
 // export type ModalProps = {
 // 	modalOpen: boolean;
@@ -47,24 +48,32 @@ export function FavoriteSpotContainer() {
 		handleSubmit,
 	} = useModal();
 
-	const { isAddFavoriteSpotsEnabled } = useMushroomMap();
+	const { isAddFavoriteSpotsEnabled, favoriteSpots, addFavoriteSpot } =
+		useMushroomMap();
 
-	const [position, setPosition] = useState<LatLngExpression | undefined>();
+	const [positions, setPositions] = useState<LatLngExpression[]>([]);
 
 	const map = useMapEvents({
 		click: (e) => {
-			const { lat, lng } = e.latlng;
-
-			if (position && [lat, lng].every((pos, i) => pos === position[i]))
-				setPosition([lat, lng]);
-
 			if (isAddFavoriteSpotsEnabled) {
-				handleModalOpen();
-				L.marker([lat, lng], { icon }).addTo(map);
+				// handleModalOpen();
+				const position = e.latlng;
+				positions.push(position);
+				setPositions((prevValue) => [...prevValue, position]);
+
+				const newFavoriteSpot = {
+					id: position.toString(),
+					position: position,
+					label: `Marker:${positions.length}`,
+				} as FavoriteSpotType;
+
+				addFavoriteSpot(newFavoriteSpot);
 			}
 		},
 	});
-	// if (!position) return;
-	// console.log(position);
-	return <FavoriteSpot position={position} label="TEST" />;
+	console.log('positions', positions);
+	console.log('favoriteSpots', favoriteSpots);
+	return favoriteSpots.map((pos: FavoriteSpotType) => (
+		<FavoriteSpot key={pos.id} position={pos.position} label={pos.label} />
+	));
 }

@@ -16,7 +16,15 @@ export default function MushroomMapProvider({ children }: any) {
 	const [mapState, setMapState] = useState<MapState | undefined>(undefined);
 	const [isAddFavoriteSpotsEnabled, setIsAddFavoriteSpotsEnabled] =
 		useState<boolean>(true);
-	const [favoriteSpots, setFavoriteSpots] = useState<FavoriteSpot[] | []>([]);
+	const [favoriteSpots, setFavoriteSpots] = useState<FavoriteSpot[]>([]);
+
+	const addFavoriteSpot = (newSpot: FavoriteSpot | undefined) => {
+		if (!newSpot) {
+			console.log('Null or undefined');
+			return;
+		}
+		setFavoriteSpots(favoriteSpots.concat(newSpot));
+	};
 
 	console.log('mapState:', mapState);
 	console.log('isAddFavoriteSpotsEnabled:', isAddFavoriteSpotsEnabled);
@@ -27,7 +35,7 @@ export default function MushroomMapProvider({ children }: any) {
 				mapState,
 				favoriteSpots,
 				setMapState,
-				setFavoriteSpots,
+				addFavoriteSpot,
 				isAddFavoriteSpotsEnabled,
 				setIsAddFavoriteSpotsEnabled,
 			}}

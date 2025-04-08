@@ -12,7 +12,7 @@ import { useMushroomMap } from './MushroomMapProvider';
 export function FavoriteSpot({ label, position }: any) {
 	return (
 		position && (
-			<div style={{ width: 200, height: 200, backgroundColor: '#fffff' }}>
+			<div>
 				<Marker
 					position={position}
 					/* 					eventHandlers={{
@@ -24,14 +24,7 @@ export function FavoriteSpot({ label, position }: any) {
 						},
 					}} */
 				>
-					<Popup
-						minWidth={90}
-						eventHandlers={{
-							click: () => {
-								console.log('marker clicked');
-							},
-						}}
-					>
+					<Popup minWidth={90}>
 						<span>{label}</span>
 					</Popup>
 				</Marker>
