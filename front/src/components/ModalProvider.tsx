@@ -7,7 +7,8 @@ import {
 } from 'react';
 import 'leaflet/dist/leaflet.css';
 
-import { ModalData } from '../types/types';
+import { FavoriteSpot } from '../types/types';
+import { LatLng, LatLngExpression } from 'leaflet';
 
 // export type ModalProps = {
 // 	modalOpen: boolean;
@@ -31,18 +32,21 @@ import { ModalData } from '../types/types';
 // </label>
 // }
 const emptyModalData = {
-	title: '',
+	id: '',
+	position: {},
+	label: '',
 	description: '',
-} as ModalData;
+} as FavoriteSpot;
 
 export type ModalDataProps = {
 	open: boolean;
 	editing: boolean;
-	modalData: ModalData;
+	modalData: FavoriteSpot;
+	favoriteSpots: FavoriteSpot[];
 	toggleEditing: VoidFunction;
-	handleModalOpen: VoidFunction;
+	handleModalOpen: (data?: LatLng) => void;
 	handleModalClose: VoidFunction;
-	handleSubmit: any;
+	addFavoriteSpot?: (newSpot: FavoriteSpot | undefined) => void;
 };
 
 const ModalContext = createContext<ModalDataProps | undefined>(undefined);
@@ -50,21 +54,42 @@ const ModalContext = createContext<ModalDataProps | undefined>(undefined);
 export function ModalProvider({ children }: any) {
 	const [open, setOpen] = useState<boolean>(false);
 	const [editing, setEditing] = useState<boolean>(false);
-	const [modalData, setModalData] = useState<ModalData>(emptyModalData);
+	const [modalData, setModalData] = useState<FavoriteSpot>(emptyModalData);
+	const [favoriteSpots, setFavoriteSpots] = useState<FavoriteSpot[]>([]);
 
-	const handleModalOpen = useCallback(() => {
+	const addFavoriteSpot = (newSpot: FavoriteSpot | undefined) => {
+		if (!newSpot) {
+			return console.log('Null or undefined');
+		}
+		setFavoriteSpots(favoriteSpots.concat(newSpot));
+		handleModalClose();
+	};
+
+	const latLngToId = (latLng: LatLngExpression) => {
+		return Object.values(latLng).toLocaleString();
+	};
+
+	const handleModalOpen = useCallback((latLng?: LatLng) => {
+		if (!latLng) return;
+
+		const existingId = latLngToId(latLng);
+		const existingFavoriteSpot = favoriteSpots.find(
+			(id) => existingId === id.id
+		);
+		if (existingFavoriteSpot) {
+			setModalData(existingFavoriteSpot);
+		} else {
+			setModalData({ ...modalData, id: latLngToId(latLng), position: latLng });
+		}
 		setOpen(true);
 	}, []);
 	const handleModalClose = useCallback(() => {
 		setOpen(false);
+		setModalData(emptyModalData);
 	}, []);
 	const toggleEditing = useCallback(() => {
 		setEditing(!false);
 	}, []);
-	const handleSubmit = (favoriteSpot: any) => {
-		handleModalClose();
-		// setFavoriteSpots(favoriteSpots.concat({ label: favoriteSpot.label, position:favoriteSpot.}));
-	};
 
 	return (
 		<ModalContext.Provider
@@ -72,10 +97,11 @@ export function ModalProvider({ children }: any) {
 				open,
 				editing,
 				modalData,
+				favoriteSpots,
 				toggleEditing,
 				handleModalOpen,
 				handleModalClose,
-				handleSubmit,
+				addFavoriteSpot,
 			}}
 		>
 			{children}

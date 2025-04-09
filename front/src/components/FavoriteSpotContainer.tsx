@@ -40,24 +40,23 @@ const icon = L.icon({
 export function FavoriteSpotContainer() {
 	const {
 		open,
-		modalData,
 		editing,
+		favoriteSpots,
 		handleModalOpen,
 		handleModalClose,
 		toggleEditing,
-		handleSubmit,
 	} = useModal();
 
-	const { isAddFavoriteSpotsEnabled, favoriteSpots, addFavoriteSpot } =
-		useMushroomMap();
+	const { isAddFavoriteSpotsEnabled } = useMushroomMap();
 
 	const [positions, setPositions] = useState<LatLngExpression[]>([]);
 
 	const map = useMapEvents({
 		click: (e) => {
 			if (isAddFavoriteSpotsEnabled) {
-				// handleModalOpen();
 				const position = e.latlng;
+				handleModalOpen(position);
+
 				positions.push(position);
 				setPositions((prevValue) => [...prevValue, position]);
 
@@ -67,7 +66,7 @@ export function FavoriteSpotContainer() {
 					label: `Marker:${positions.length}`,
 				} as FavoriteSpotType;
 
-				addFavoriteSpot(newFavoriteSpot);
+				// addFavoriteSpot(newFavoriteSpot);
 			}
 		},
 	});

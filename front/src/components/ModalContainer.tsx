@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
 import Modal from './Modal';
-import { useModal } from './ModalProvider';
+import { ModalDataProps, useModal } from './ModalProvider';
+import { FavoriteSpot } from '../types/types';
 
 // export type ModalProps = {
 // 	modalOpen: boolean;
@@ -33,24 +34,29 @@ export function ModalContainer() {
 		handleModalOpen,
 		handleModalClose,
 		toggleEditing,
-		handleSubmit,
+		addFavoriteSpot,
 	} = useModal();
 
 	const imgSrc =
 		'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fa%2Fac%2FCantharellus_infudibuliformis1.jpg%2F120px-Cantharellus_infudibuliformis1.jpg&f=1&nofb=1&ipt=987d9b8b12c08a9ded04083708f5fbb84853546633a1390156940d9e5779f713&ipo=images';
 	useEffect(() => {
-		const contentArr = [modalData.title, modalData.description];
+		const contentArr = [modalData.label, modalData.description] as string[];
 		if (checkIfStringIsUndefinedOrEmpty(contentArr)) {
-			console.log('fired');
 			toggleEditing();
 		}
 	}, []);
 
 	const checkIfStringIsUndefinedOrEmpty = (values: string[]) => {
+		if (!values) return;
+
 		const stringIsUndefinedOrEmpty = values.every((value) => {
 			return value === undefined || value.length === 0;
 		});
 		return stringIsUndefinedOrEmpty;
+	};
+
+	const handleSubmit = (data: FavoriteSpot) => {
+		addFavoriteSpot(data);
 	};
 	return (
 		<Modal

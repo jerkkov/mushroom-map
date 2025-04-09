@@ -16,25 +16,16 @@ import {
 	IconButton,
 	Input,
 	InputLabel,
-	ModalProps,
 	SvgIcon,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { ModalDataProps } from './ModalProvider';
 import { useFormInput } from '../hooks/useFormInput';
+import { FavoriteSpot } from '../types/types';
 
-// function form () {
-// 	<label>
-// 	<input
-// 		type="text"
-// 		name="title"
-// 		value={radioLabels[0]}
-// 		checked={selectedOption === radioLabels[0]}
-// 		onChange={handleChange}
-// 	/>
-// 	<span>{radioLabels[0]}</span>
-// </label>
-// }
+type ModalProps = ModalDataProps & {
+	handleSubmit: (data: FavoriteSpot) => void;
+};
 
 export default function Modal({
 	open,
@@ -44,16 +35,17 @@ export default function Modal({
 	handleModalClose,
 	toggleEditing,
 	handleSubmit,
-}: ModalDataProps) {
+}: ModalProps) {
 	// if (open === false) return;
-	const title = useFormInput('');
+	const label = useFormInput('');
 	const description = useFormInput('');
 	console.log(open);
 	return editing ? (
 		<Dialog open={open}>
 			<DialogActions></DialogActions>
 			<DialogTitle>
-				{modalData.title}
+				<td>{modalData.label}</td>
+				<td>{modalData.id}</td>
 				<IconButton disabled={editing}>
 					<SvgIcon component={EditIcon} />
 				</IconButton>
@@ -71,7 +63,7 @@ export default function Modal({
 				>
 					<FormControl variant="standard">
 						<InputLabel htmlFor="title">Otsikko</InputLabel>
-						<Input id="title" onChange={title.onChange} value={title.value} />
+						<Input id="title" onChange={label.onChange} value={label.value} />
 					</FormControl>
 					<FormControl variant="standard">
 						<InputLabel htmlFor="description">Kuvaus</InputLabel>
@@ -83,7 +75,17 @@ export default function Modal({
 					</FormControl>
 				</Box>
 			</DialogContent>
-			<Button variant="contained" onClick={() => handleSubmit()}>
+			<Button
+				variant="contained"
+				onClick={() =>
+					handleSubmit({
+						id: modalData.id,
+						position: modalData.position,
+						label: label.value,
+						description: description.value,
+					})
+				}
+			>
 				Save
 			</Button>
 			<Button variant="outlined" onClick={() => handleModalClose()}>
@@ -93,15 +95,12 @@ export default function Modal({
 	) : (
 		<Dialog open={open}>
 			<DialogTitle>
-				{modalData.title}
+				{modalData.label}
 				<IconButton disabled={editing} onClick={() => toggleEditing()}>
 					<SvgIcon component={EditIcon} />
 				</IconButton>
 			</DialogTitle>
 			<DialogContent>{modalData.description}</DialogContent>
-			<Button variant="contained" onClick={() => handleSubmit()}>
-				Save
-			</Button>
 			<Button variant="outlined" onClick={() => handleModalClose()}>
 				Cancel
 			</Button>
