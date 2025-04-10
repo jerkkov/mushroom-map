@@ -1,6 +1,8 @@
 import {
 	createContext,
+	Dispatch,
 	ReactNode,
+	SetStateAction,
 	useCallback,
 	useContext,
 	useState,
@@ -44,6 +46,7 @@ export type ModalDataProps = {
 	modalData: FavoriteSpot;
 	favoriteSpots: FavoriteSpot[];
 	toggleEditing: VoidFunction;
+	setEditing: Dispatch<React.SetStateAction<boolean>>;
 	handleModalOpen: (data?: LatLng) => void;
 	handleModalClose: VoidFunction;
 	addFavoriteSpot?: (newSpot: FavoriteSpot | undefined) => void;
@@ -69,27 +72,30 @@ export function ModalProvider({ children }: any) {
 		return Object.values(latLng).toLocaleString();
 	};
 
-	const handleModalOpen = useCallback((latLng?: LatLng) => {
+	const handleModalOpen = (latLng?: LatLng) => {
 		if (!latLng) return;
 
-		const existingId = latLngToId(latLng);
+		const newLatLng = latLngToId(latLng);
+
 		const existingFavoriteSpot = favoriteSpots.find(
-			(id) => existingId === id.id
+			(favSpot) => favSpot.id === newLatLng
 		);
 		if (existingFavoriteSpot) {
 			setModalData(existingFavoriteSpot);
 		} else {
-			setModalData({ ...modalData, id: latLngToId(latLng), position: latLng });
+			setModalData({ ...modalData, id: newLatLng, position: latLng });
 		}
 		setOpen(true);
-	}, []);
-	const handleModalClose = useCallback(() => {
+	};
+
+	const handleModalClose = () => {
 		setOpen(false);
 		setModalData(emptyModalData);
-	}, []);
-	const toggleEditing = useCallback(() => {
-		setEditing(!false);
-	}, []);
+		setEditing(false);
+	};
+	const toggleEditing = () => {
+		setEditing((editing) => !editing);
+	};
 
 	return (
 		<ModalContext.Provider
@@ -98,6 +104,7 @@ export function ModalProvider({ children }: any) {
 				editing,
 				modalData,
 				favoriteSpots,
+				setEditing,
 				toggleEditing,
 				handleModalOpen,
 				handleModalClose,

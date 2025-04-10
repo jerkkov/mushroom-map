@@ -59,18 +59,10 @@ export function FavoriteSpotContainer() {
 
 				positions.push(position);
 				setPositions((prevValue) => [...prevValue, position]);
-
-				const newFavoriteSpot = {
-					id: position.toString(),
-					position: position,
-					label: `Marker:${positions.length}`,
-				} as FavoriteSpotType;
-
-				// addFavoriteSpot(newFavoriteSpot);
 			}
 		},
 	});
-	console.log('positions', positions);
+	// console.log('positions', positions);
 	console.log('favoriteSpots', favoriteSpots);
 	return favoriteSpots.map((pos: FavoriteSpotType) => (
 		<FavoriteSpot key={pos.id} position={pos.position} label={pos.label} />

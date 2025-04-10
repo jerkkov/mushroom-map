@@ -10,7 +10,12 @@ export function useFormInput(initialValue: string) {
 	const inputProps = {
 		value: value,
 		onChange: handleChange,
+		emptyField: emptyField,
 	};
+
+	function emptyField() {
+		setValue('');
+	}
 
 	return inputProps;
 }

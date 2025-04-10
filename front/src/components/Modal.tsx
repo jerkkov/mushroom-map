@@ -17,6 +17,7 @@ import {
 	Input,
 	InputLabel,
 	SvgIcon,
+	TextField,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { ModalDataProps } from './ModalProvider';
@@ -31,22 +32,22 @@ export default function Modal({
 	open,
 	editing,
 	modalData,
+	label,
+	description,
+	setLabel,
+	setDescription,
 	handleModalOpen,
 	handleModalClose,
 	toggleEditing,
 	handleSubmit,
 }: ModalProps) {
-	// if (open === false) return;
-	const label = useFormInput('');
-	const description = useFormInput('');
-	console.log(open);
+	console.log('EDITING', editing);
 	return editing ? (
 		<Dialog open={open}>
-			<DialogActions></DialogActions>
 			<DialogTitle>
 				<td>{modalData.label}</td>
 				<td>{modalData.id}</td>
-				<IconButton disabled={editing}>
+				<IconButton onClick={() => toggleEditing()}>
 					<SvgIcon component={EditIcon} />
 				</IconButton>
 			</DialogTitle>
@@ -61,35 +62,41 @@ export default function Modal({
 					noValidate
 					autoComplete="off"
 				>
-					<FormControl variant="standard">
-						<InputLabel htmlFor="title">Otsikko</InputLabel>
-						<Input id="title" onChange={label.onChange} value={label.value} />
-					</FormControl>
-					<FormControl variant="standard">
-						<InputLabel htmlFor="description">Kuvaus</InputLabel>
-						<Input
-							id="description"
-							onChange={description.onChange}
-							value={description.value}
-						/>
-					</FormControl>
+					<TextField
+						id="label"
+						label="Otsikko"
+						defaultValue={modalData.label}
+						onChange={(e) => setLabel(e.target.value)}
+					/>
+					<TextField
+						id="description"
+						label="Kuvaus"
+						defaultValue={modalData.description}
+						onChange={(e) => setDescription(e.target.value)}
+					/>
 				</Box>
 			</DialogContent>
 			<Button
+				type="submit"
 				variant="contained"
 				onClick={() =>
 					handleSubmit({
 						id: modalData.id,
 						position: modalData.position,
-						label: label.value,
-						description: description.value,
+						label: label,
+						description: description,
 					})
 				}
 			>
-				Save
+				Tallenna
 			</Button>
-			<Button variant="outlined" onClick={() => handleModalClose()}>
-				Cancel
+			<Button
+				variant="outlined"
+				onClick={() => {
+					handleModalClose();
+				}}
+			>
+				Peruuta
 			</Button>
 		</Dialog>
 	) : (

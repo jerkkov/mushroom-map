@@ -136,6 +136,6 @@ export type FavoriteSpot = {
 	id: string;
 	position: LatLngExpression;
 	label: string;
-	description?: string;
+	description: string;
 	mushroomType?: suppilovahvero | kanttarelli;
 };

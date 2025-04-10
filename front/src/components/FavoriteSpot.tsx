@@ -1,6 +1,7 @@
-import { Marker, Popup, useMapEvents } from 'react-leaflet';
+import { Marker, Popup, Tooltip, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useMushroomMap } from './MushroomMapProvider';
+import { useModal } from './ModalProvider';
 
 /* const icon = L.icon({
 	iconSize: [25, 41],
@@ -10,23 +11,22 @@ import { useMushroomMap } from './MushroomMapProvider';
 	shadowUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png',
 }); */
 export function FavoriteSpot({ label, position }: any) {
+	const { handleModalOpen } = useModal();
 	return (
 		position && (
 			<div>
 				<Marker
 					position={position}
-					/* 					eventHandlers={{
-						mouseover: () => {
-							setIsAddFavoriteSpotsEnabled(false);
+					eventHandlers={{
+						click: () => {
+							handleModalOpen(position);
 						},
-						mouseout: () => {
+						/* 			mouseover: () => {
 							setIsAddFavoriteSpotsEnabled(true);
-						},
-					}} */
+						}, */
+					}}
 				>
-					<Popup minWidth={90}>
-						<span>{label}</span>
-					</Popup>
+					<Tooltip content={label} direction="top" />
 				</Marker>
 			</div>
 		)
