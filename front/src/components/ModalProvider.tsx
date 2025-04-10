@@ -64,7 +64,18 @@ export function ModalProvider({ children }: any) {
 		if (!newSpot) {
 			return console.log('Null or undefined');
 		}
-		setFavoriteSpots(favoriteSpots.concat(newSpot));
+		const existingFavoriteSpot = favoriteSpots.find(
+			(favSpot) => favSpot.id === newSpot.id
+		);
+		if (!existingFavoriteSpot) {
+			setFavoriteSpots(favoriteSpots.concat(newSpot));
+		} else {
+			setFavoriteSpots(
+				favoriteSpots
+					.filter((oldSpot) => oldSpot.id !== existingFavoriteSpot.id)
+					.concat(newSpot)
+			);
+		}
 		handleModalClose();
 	};
 
