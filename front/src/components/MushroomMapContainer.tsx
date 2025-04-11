@@ -26,13 +26,10 @@ export default function MushroomMapContainer() {
 		setKanttarelliProbability,
 	} = useFilter();
 
-	console.log('suppiloProbabilityMMCOntainer', suppiloProbability);
-
 	useEffect(() => {
 		try {
 			if (!locationData) {
 				setLocationData(Tampere as MushroomFeatureCollection);
-				console.log('locationDataSET', locationData);
 			}
 			if (!suppiloProbability) {
 				setSuppiloProbability(probabilityOptions[0].probability);

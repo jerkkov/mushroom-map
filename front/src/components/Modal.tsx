@@ -23,6 +23,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { ModalDataProps } from './ModalProvider';
 import { useFormInput } from '../hooks/useFormInput';
 import { FavoriteSpot } from '../types/types';
+import { Label } from '@mui/icons-material';
 
 type ModalProps = ModalDataProps & {
 	handleSubmit: (data: FavoriteSpot) => void;
@@ -45,8 +46,8 @@ export default function Modal({
 	return editing ? (
 		<Dialog open={open}>
 			<DialogTitle>
-				<td>{modalData.label}</td>
-				<td>{modalData.id}</td>
+				<span>{modalData.label}</span>
+				<span>{modalData.id}</span>
 				<IconButton onClick={() => toggleEditing()}>
 					<SvgIcon component={EditIcon} />
 				</IconButton>
@@ -107,7 +108,9 @@ export default function Modal({
 					<SvgIcon component={EditIcon} />
 				</IconButton>
 			</DialogTitle>
-			<DialogContent>{modalData.description}</DialogContent>
+			<DialogContent>
+				<p>{modalData.description}</p>
+			</DialogContent>
 			<Button variant="outlined" onClick={() => handleModalClose()}>
 				Cancel
 			</Button>
