@@ -48,7 +48,11 @@ export default function MushroomMapContainer() {
 		if (!feature || !feature.properties) return <></>;
 
 		const propertyArray = Object.entries(feature.properties).filter(
-			(property) => property[1] && property[0] === "MAINTREESPECIES" || property[0] === "SOILTYPE" || property[0] === "DEVELOPMENTCLASS" || property[0] === "FERTILITYCLASS" 
+			(property) =>
+				(property[1] && property[0] === 'MAINTREESPECIES') ||
+				property[0] === 'SOILTYPE' ||
+				property[0] === 'DEVELOPMENTCLASS' ||
+				property[0] === 'FERTILITYCLASS'
 		);
 		return (
 			<section>
@@ -143,7 +147,6 @@ export default function MushroomMapContainer() {
 			suppiloProbability={suppiloProbability}
 			kanttarelliProbability={kanttarelliProbability}
 			onEachFeature={onEachFeature}
-			// layerToggleRef={'s'}
 		/>
 	);
 }

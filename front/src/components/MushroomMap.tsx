@@ -11,6 +11,7 @@ import {
 import { MAPSTATE, useMushroomMap } from './MushroomMapProvider';
 import { FavoriteSpotContainer } from './FavoriteSpotContainer';
 import { useFilter } from './FilterProvider';
+import { mushroomColors } from '../types/types';
 
 export default function MushroomMap({
 	locationData,
@@ -38,6 +39,7 @@ export default function MushroomMap({
 							key={locationData ? suppiloProbability : locationData}
 							data={locationData}
 							filter={suppiloFilter}
+							style={{ color: mushroomColors.SUPPILOVAHVERO }}
 							onEachFeature={onEachFeature}
 						/>
 					</LayerGroup>
@@ -48,7 +50,7 @@ export default function MushroomMap({
 							key={locationData ? kanttarelliProbability : locationData}
 							data={locationData}
 							filter={kanttarelliFilter}
-							style={{ color: 'red' }}
+							style={{ color: mushroomColors.KANTTARELLI }}
 							onEachFeature={onEachFeature}
 						/>
 					</LayerGroup>

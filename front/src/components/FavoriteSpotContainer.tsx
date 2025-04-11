@@ -6,15 +6,29 @@ import { useModal } from './ModalProvider';
 import { FavoriteSpot } from './FavoriteSpot';
 import { useMushroomMap } from './MushroomMapProvider';
 import { FavoriteSpot as FavoriteSpotType } from '../types/types';
+import suppilovahveroIcon from '../assets/Suppilovahvero-filled.svg';
+import kanttarelliIcon from '../assets/Kanttarelli-filled.svg';
 
-const icon = L.icon({
-	iconSize: [25, 41],
+const iconSuppilovahvero = L.icon({
+	iconSize: [35, 51],
 	iconAnchor: [10, 41],
 	popupAnchor: [2, -40],
-	iconUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-icon.png',
-	shadowUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png',
+	iconUrl: suppilovahveroIcon,
 });
 
+const iconKanttarelli = L.icon({
+	iconSize: [35, 51],
+	iconAnchor: [10, 41],
+	popupAnchor: [2, -40],
+	iconUrl: kanttarelliIcon,
+});
+
+const iconMuu = L.icon({
+	iconSize: [35, 51],
+	iconAnchor: [10, 41],
+	popupAnchor: [2, -40],
+	iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+});
 export function FavoriteSpotContainer() {
 	const {
 		open,
@@ -40,9 +54,25 @@ export function FavoriteSpotContainer() {
 			}
 		},
 	});
+	const chooseIcon = (type: string) => {
+		switch (type) {
+			case 'Suppilovahvero':
+				return iconSuppilovahvero;
+			case 'Kanttarelli':
+				return iconKanttarelli;
+			default:
+				return iconMuu;
+		}
+	};
+
 	// console.log('positions', positions);
 	console.log('favoriteSpots', favoriteSpots);
 	return favoriteSpots.map((pos: FavoriteSpotType) => (
-		<FavoriteSpot key={pos.id} position={pos.position} label={pos.label} />
+		<FavoriteSpot
+			key={pos.id}
+			position={pos.position}
+			label={pos.label}
+			icon={chooseIcon(pos.mushroomType ?? 'Muu')}
+		/>
 	));
 }

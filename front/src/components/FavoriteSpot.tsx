@@ -9,14 +9,14 @@ import { useModal } from './ModalProvider';
 	iconUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-icon.png',
 	shadowUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png',
 }); */
-export function FavoriteSpot({ label, position }: any) {
-	
+export function FavoriteSpot({ label, position, icon }: any) {
 	const { handleModalOpen } = useModal();
 
 	return (
 		position && (
 			<div>
 				<Marker
+					icon={icon}
 					position={position}
 					eventHandlers={{
 						click: () => {
@@ -24,7 +24,7 @@ export function FavoriteSpot({ label, position }: any) {
 						},
 					}}
 				>
-					<Tooltip  direction="top" > {label}</Tooltip>
+					<Tooltip direction="top"> {label}</Tooltip>
 				</Marker>
 			</div>
 		)

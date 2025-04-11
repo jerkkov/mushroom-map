@@ -139,3 +139,8 @@ export type FavoriteSpot = {
 	description: string;
 	mushroomType?: suppilovahvero | kanttarelli;
 };
+
+export const mushroomColors = {
+	SUPPILOVAHVERO: '#B1876A',
+	KANTTARELLI: '#F6A213',
+};
