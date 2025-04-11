@@ -11,15 +11,20 @@ import {
 	DialogContent,
 	DialogTitle,
 	FormControl,
+	FormControlLabel,
 	FormGroup,
+	FormLabel,
 	Icon,
 	IconButton,
 	Input,
 	InputLabel,
+	Radio,
+	RadioGroup,
 	SvgIcon,
 	TextField,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { ModalDataProps } from './ModalProvider';
 import { useFormInput } from '../hooks/useFormInput';
 import { FavoriteSpot } from '../types/types';
@@ -37,10 +42,12 @@ export default function Modal({
 	description,
 	setLabel,
 	setDescription,
-	handleModalOpen,
+	handleRemove,
 	handleModalClose,
 	toggleEditing,
 	handleSubmit,
+	setType,
+	type,
 }: ModalProps) {
 	console.log('EDITING', editing);
 	return editing ? (
@@ -50,6 +57,9 @@ export default function Modal({
 				<span>{modalData.id}</span>
 				<IconButton onClick={() => toggleEditing()}>
 					<SvgIcon component={EditIcon} />
+				</IconButton>
+				<IconButton onClick={() => handleRemove(modalData.id)}>
+					<SvgIcon component={DeleteForeverIcon} />
 				</IconButton>
 			</DialogTitle>
 			<DialogContent className="modal">
@@ -63,6 +73,18 @@ export default function Modal({
 					noValidate
 					autoComplete="off"
 				>
+					<FormControl>
+  <FormLabel id="demo-radio-buttons-group-label">Sieni</FormLabel>
+		<RadioGroup
+			defaultValue="Suppilovahvero"
+			name="radio-buttons-group"
+			onChange={(e) => setType(e.target.value)}
+		>
+			<FormControlLabel checked={type === "Suppilovahvero"} value="Suppilovahvero" control={<Radio />} label="Suppilovahvero" />
+			<FormControlLabel checked={type === "Kanttarelli"}value="Kanttarelli" control={<Radio />} label="Kanttarelli" />
+			<FormControlLabel checked={type === "Muu"}value="Muu" control={<Radio />} label="Muu" />
+		</RadioGroup>
+		</FormControl>
 					<TextField
 						id="label"
 						label="Otsikko"
@@ -72,6 +94,7 @@ export default function Modal({
 					<TextField
 						id="description"
 						label="Kuvaus"
+						multiline
 						defaultValue={modalData.description}
 						onChange={(e) => setDescription(e.target.value)}
 					/>
@@ -86,6 +109,7 @@ export default function Modal({
 						position: modalData.position,
 						label: label,
 						description: description,
+						mushroomType: type,
 					})
 				}
 			>
@@ -109,6 +133,7 @@ export default function Modal({
 				</IconButton>
 			</DialogTitle>
 			<DialogContent>
+				<p style={{color:"gray"}}>{type}</p>
 				<p>{modalData.description}</p>
 			</DialogContent>
 			<Button variant="outlined" onClick={() => handleModalClose()}>

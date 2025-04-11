@@ -22,9 +22,6 @@ export function FavoriteSpot({ label, position }: any) {
 						click: () => {
 							handleModalOpen(position);
 						},
-						/* 			mouseover: () => {
-							setIsAddFavoriteSpotsEnabled(true);
-						}, */
 					}}
 				>
 					<Tooltip  direction="top" > {label}</Tooltip>

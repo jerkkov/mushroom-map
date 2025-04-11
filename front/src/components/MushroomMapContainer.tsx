@@ -9,6 +9,7 @@ import {
 	fertilityClassProperties,
 	mainTreeSpeciesProperties,
 	MushroomFeatureCollection,
+	Stand,
 } from '../types/types';
 import Tampere from '../assets/tampere-polygon-wgs84.json';
 import { MAPSTATE, useMushroomMap } from './MushroomMapProvider';
@@ -47,7 +48,7 @@ export default function MushroomMapContainer() {
 		if (!feature || !feature.properties) return <></>;
 
 		const propertyArray = Object.entries(feature.properties).filter(
-			(property) => property[1]
+			(property) => property[1] && property[0] === "MAINTREESPECIES" || property[0] === "SOILTYPE" || property[0] === "DEVELOPMENTCLASS" || property[0] === "FERTILITYCLASS" 
 		);
 		return (
 			<section>

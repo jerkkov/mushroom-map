@@ -7,7 +7,7 @@ import {
 import { useMushroomMap } from './MushroomMapProvider';
 import { useFilter } from './FilterProvider';
 import { Filter } from './Filter';
-import { Switch } from '@mui/material';
+import { FormGroup, Switch } from '@mui/material';
 
 const radioLabels = probabilityOptions.map(
 	(option: ProbabilityOption) => option.label
@@ -53,6 +53,7 @@ export function FilterContainer({}) {
 	};
 	return (
 		<>
+		Lisää suosikkipaikkoja
 			<Switch
 				defaultChecked={true}
 				onChange={() =>

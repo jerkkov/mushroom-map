@@ -7,6 +7,7 @@ import { FavoriteSpot } from '../types/types';
 export function ModalContainer() {
 	const [label, setLabel] = useState<string | undefined>(undefined);
 	const [description, setDescription] = useState<string | undefined>(undefined);
+	const [type, setType] = useState<string>("Suppilovahvero");
 
 	const {
 		open,
@@ -14,6 +15,7 @@ export function ModalContainer() {
 		editing,
 		handleModalOpen,
 		handleModalClose,
+		handleRemove,
 		toggleEditing,
 		addFavoriteSpot,
 		setEditing,
@@ -56,10 +58,12 @@ export function ModalContainer() {
 			description={description}
 			setLabel={setLabel}
 			setDescription={setDescription}
-			handleModalOpen={handleModalOpen}
 			toggleEditing={toggleEditing}
 			handleModalClose={handleModalClose}
+			handleRemove={handleRemove}
 			handleSubmit={handleSubmit}
+			setType={setType}
+			type={type}
 		/>
 	);
 }

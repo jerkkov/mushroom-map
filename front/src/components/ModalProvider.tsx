@@ -39,6 +39,7 @@ const emptyModalData = {
 	position: {},
 	label: '',
 	description: '',
+	mushroomType: undefined,
 } as FavoriteSpot;
 
 export type ModalDataProps = {
@@ -50,6 +51,7 @@ export type ModalDataProps = {
 	setEditing: Dispatch<React.SetStateAction<boolean>>;
 	handleModalOpen: (data?: LatLng) => void;
 	handleModalClose: VoidFunction;
+	handleRemove: (id:string) => void;
 	addFavoriteSpot?: (newSpot: FavoriteSpot | undefined) => void;
 };
 
@@ -66,19 +68,33 @@ export function ModalProvider({ children }: any) {
 			return console.log('Null or undefined');
 		}
 		const existingFavoriteSpot = favoriteSpots.find(
-			(favSpot) => favSpot.id === newSpot.id
+			(spot) => spot.id === newSpot.id
 		);
 		if (!existingFavoriteSpot) {
 			setFavoriteSpots(favoriteSpots.concat(newSpot));
 		} else {
 			setFavoriteSpots(
 				favoriteSpots
-					.filter((oldSpot) => oldSpot.id !== existingFavoriteSpot.id)
+					.filter((spot) => spot.id !== existingFavoriteSpot.id)
 					.concat(newSpot)
 			);
 		}
 		handleModalClose();
 	};
+
+	const handleRemove = (id: string) => {
+		const favoriteSpotToBeRemoved = favoriteSpots.find(
+			(spot) => spot.id === id
+		);
+		if(favoriteSpotToBeRemoved) {
+			setFavoriteSpots(favoriteSpots.filter((spot) => spot.id !== id))
+			console.log(`Favorite spot with id ${id} removed`)
+		}
+		else {
+			console.log(`No favorite spot exists with id ${id}`)
+		}
+		handleModalClose()
+	}
 
 	const handleModalOpen = (latLng?: LatLng) => {
 		if (!latLng) return;
@@ -91,7 +107,7 @@ export function ModalProvider({ children }: any) {
 		if (existingFavoriteSpot) {
 			setModalData(existingFavoriteSpot);
 		} else {
-			setModalData({ ...modalData, id: newLatLng, position: latLng });
+			setModalData({ ...modalData, id: newLatLng, position: latLng});
 		}
 		setOpen(true);
 	};
@@ -116,6 +132,7 @@ export function ModalProvider({ children }: any) {
 				toggleEditing,
 				handleModalOpen,
 				handleModalClose,
+				handleRemove,
 				addFavoriteSpot,
 			}}
 		>

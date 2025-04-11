@@ -7,15 +7,6 @@ import { FavoriteSpot } from './FavoriteSpot';
 import { useMushroomMap } from './MushroomMapProvider';
 import { FavoriteSpot as FavoriteSpotType } from '../types/types';
 
-// export type ModalProps = {
-// 	modalOpen: boolean;
-// 	// editing: boolean;
-// 	handleClose: VoidFunction;
-// 	handleSubmit: any;
-// 	title: string;
-// 	description: string;
-// };
-
 const icon = L.icon({
 	iconSize: [25, 41],
 	iconAnchor: [10, 41],
@@ -23,19 +14,6 @@ const icon = L.icon({
 	iconUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-icon.png',
 	shadowUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png',
 });
-
-// function form () {
-// 	<label>
-// 	<input
-// 		type="text"
-// 		name="title"
-// 		value={radioLabels[0]}
-// 		checked={selectedOption === radioLabels[0]}
-// 		onChange={handleChange}
-// 	/>
-// 	<span>{radioLabels[0]}</span>
-// </label>
-// }
 
 export function FavoriteSpotContainer() {
 	const {
