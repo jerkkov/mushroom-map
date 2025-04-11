@@ -11,6 +11,7 @@ import 'leaflet/dist/leaflet.css';
 
 import { FavoriteSpot } from '../types/types';
 import { LatLng, LatLngExpression } from 'leaflet';
+import { latLngToId } from '../services/utils';
 
 // export type ModalProps = {
 // 	modalOpen: boolean;
@@ -77,10 +78,6 @@ export function ModalProvider({ children }: any) {
 			);
 		}
 		handleModalClose();
-	};
-
-	const latLngToId = (latLng: LatLngExpression) => {
-		return Object.values(latLng).toLocaleString();
 	};
 
 	const handleModalOpen = (latLng?: LatLng) => {

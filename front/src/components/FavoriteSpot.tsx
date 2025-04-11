@@ -1,6 +1,5 @@
-import { Marker, Popup, Tooltip, useMapEvents } from 'react-leaflet';
+import { Marker, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useMushroomMap } from './MushroomMapProvider';
 import { useModal } from './ModalProvider';
 
 /* const icon = L.icon({
@@ -11,7 +10,9 @@ import { useModal } from './ModalProvider';
 	shadowUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png',
 }); */
 export function FavoriteSpot({ label, position }: any) {
+	
 	const { handleModalOpen } = useModal();
+
 	return (
 		position && (
 			<div>
@@ -26,7 +27,7 @@ export function FavoriteSpot({ label, position }: any) {
 						}, */
 					}}
 				>
-					<Tooltip content={label} direction="top" />
+					<Tooltip  direction="top" > {label}</Tooltip>
 				</Marker>
 			</div>
 		)
