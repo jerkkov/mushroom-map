@@ -1,23 +1,14 @@
-import { ReactNode, useEffect, useState } from 'react';
-import { useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { v4 as uuid } from 'uuid';
 import {
 	Box,
 	Button,
 	Dialog,
-	DialogActions,
 	DialogContent,
 	DialogTitle,
 	FormControl,
 	FormControlLabel,
-	FormGroup,
 	FormLabel,
-	Icon,
 	IconButton,
-	Input,
-	InputLabel,
 	Radio,
 	RadioGroup,
 	SvgIcon,
@@ -25,13 +16,17 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { ModalDataProps } from './ModalProvider';
-import { useFormInput } from '../hooks/useFormInput';
-import { FavoriteSpot } from '../types/types';
-import { Label } from '@mui/icons-material';
+import { ModalProps } from './ModalProvider';
+import { FavoriteSpot, mushroomType } from '../types/types';
 
-type ModalProps = ModalDataProps & {
+type ModalPropsType = ModalProps & {
+	label: string | undefined;
+	description: string | undefined;
+	mushroomType: mushroomType;
 	handleSubmit: (data: FavoriteSpot) => void;
+	setLabel: React.Dispatch<React.SetStateAction<string | undefined>>;
+	setDescription: React.Dispatch<React.SetStateAction<string | undefined>>;
+	setMushroomType: React.Dispatch<React.SetStateAction<mushroomType>>;
 };
 
 export default function Modal({
@@ -46,10 +41,9 @@ export default function Modal({
 	handleModalClose,
 	toggleEditing,
 	handleSubmit,
-	setType,
-	type,
-}: ModalProps) {
-	console.log('EDITING', editing);
+	setMushroomType,
+	mushroomType,
+}: ModalPropsType) {
 	return editing ? (
 		<Dialog open={open}>
 			<DialogTitle>
@@ -74,17 +68,32 @@ export default function Modal({
 					autoComplete="off"
 				>
 					<FormControl>
-  <FormLabel id="demo-radio-buttons-group-label">Sieni</FormLabel>
-		<RadioGroup
-			defaultValue="Suppilovahvero"
-			name="radio-buttons-group"
-			onChange={(e) => setType(e.target.value)}
-		>
-			<FormControlLabel checked={type === "Suppilovahvero"} value="Suppilovahvero" control={<Radio />} label="Suppilovahvero" />
-			<FormControlLabel checked={type === "Kanttarelli"}value="Kanttarelli" control={<Radio />} label="Kanttarelli" />
-			<FormControlLabel checked={type === "Muu"}value="Muu" control={<Radio />} label="Muu" />
-		</RadioGroup>
-		</FormControl>
+						<FormLabel id="demo-radio-buttons-group-label">Sieni</FormLabel>
+						<RadioGroup
+							defaultValue="Suppilovahvero"
+							name="radio-buttons-group"
+							onChange={(e) => setMushroomType(e.target.value as mushroomType)}
+						>
+							<FormControlLabel
+								checked={mushroomType === 'Suppilovahvero'}
+								value="Suppilovahvero"
+								control={<Radio />}
+								label="Suppilovahvero"
+							/>
+							<FormControlLabel
+								checked={mushroomType === 'Kanttarelli'}
+								value="Kanttarelli"
+								control={<Radio />}
+								label="Kanttarelli"
+							/>
+							<FormControlLabel
+								checked={mushroomType === 'Muu'}
+								value="Muu"
+								control={<Radio />}
+								label="Muu"
+							/>
+						</RadioGroup>
+					</FormControl>
 					<TextField
 						id="label"
 						label="Otsikko"
@@ -109,7 +118,7 @@ export default function Modal({
 						position: modalData.position,
 						label: label,
 						description: description,
-						mushroomType: type,
+						mushroomType: mushroomType,
 					})
 				}
 			>
@@ -133,7 +142,7 @@ export default function Modal({
 				</IconButton>
 			</DialogTitle>
 			<DialogContent>
-				<p style={{color:"gray"}}>{type}</p>
+				<p style={{ color: 'gray' }}>{mushroomType}</p>
 				<p>{modalData.description}</p>
 			</DialogContent>
 			<Button variant="outlined" onClick={() => handleModalClose()}>

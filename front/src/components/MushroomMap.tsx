@@ -44,7 +44,7 @@ export default function MushroomMap({
 						/>
 					</LayerGroup>
 				</LayersControl.Overlay>
-				<LayersControl.Overlay name="Keltavahvero" checked={true}>
+				<LayersControl.Overlay name="Kanttarelli" checked={true}>
 					<LayerGroup>
 						<GeoJSON
 							key={locationData ? kanttarelliProbability : locationData}

@@ -2,14 +2,13 @@ import { useEffect, useState } from 'react';
 import '../App.scss';
 
 import MushroomMap from './MushroomMap';
-import { Feature, FeatureCollection } from 'geojson';
+import { Feature } from 'geojson';
 import ReactDOMServer from 'react-dom/server';
 import {
 	developmentalClassProperties,
 	fertilityClassProperties,
 	mainTreeSpeciesProperties,
 	MushroomFeatureCollection,
-	Stand,
 } from '../types/types';
 import Tampere from '../assets/tampere-polygon-wgs84.json';
 import { MAPSTATE, useMushroomMap } from './MushroomMapProvider';

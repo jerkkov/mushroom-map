@@ -52,9 +52,6 @@ export function RadioGroup({
 					/>
 					<span>{radioLabels[2]}</span>
 				</label>
-
-				<p>Selected: {selectedOption}</p>
-				{/* <div className="content">{}</div> */}
 			</section>
 		)
 	);

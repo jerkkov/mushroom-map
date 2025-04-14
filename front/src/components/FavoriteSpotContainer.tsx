@@ -30,14 +30,7 @@ const iconMuu = L.icon({
 	iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
 });
 export function FavoriteSpotContainer() {
-	const {
-		open,
-		editing,
-		favoriteSpots,
-		handleModalOpen,
-		handleModalClose,
-		toggleEditing,
-	} = useModal();
+	const { favoriteSpots, handleModalOpen } = useModal();
 
 	const { isAddFavoriteSpotsEnabled } = useMushroomMap();
 
@@ -65,8 +58,6 @@ export function FavoriteSpotContainer() {
 		}
 	};
 
-	// console.log('positions', positions);
-	console.log('favoriteSpots', favoriteSpots);
 	return favoriteSpots.map((pos: FavoriteSpotType) => (
 		<FavoriteSpot
 			key={pos.id}

@@ -2,18 +2,18 @@ import { useEffect, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 import Modal from './Modal';
 import { useModal } from './ModalProvider';
-import { FavoriteSpot } from '../types/types';
+import { FavoriteSpot, mushroomType } from '../types/types';
 
 export function ModalContainer() {
 	const [label, setLabel] = useState<string | undefined>(undefined);
 	const [description, setDescription] = useState<string | undefined>(undefined);
-	const [type, setType] = useState<string>("Suppilovahvero");
+	const [mushroomType, setMushroomType] =
+		useState<mushroomType>('Suppilovahvero');
 
 	const {
 		open,
 		modalData,
 		editing,
-		handleModalOpen,
 		handleModalClose,
 		handleRemove,
 		toggleEditing,
@@ -21,8 +21,6 @@ export function ModalContainer() {
 		setEditing,
 	} = useModal();
 
-	const imgSrc =
-		'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fa%2Fac%2FCantharellus_infudibuliformis1.jpg%2F120px-Cantharellus_infudibuliformis1.jpg&f=1&nofb=1&ipt=987d9b8b12c08a9ded04083708f5fbb84853546633a1390156940d9e5779f713&ipo=images';
 	useEffect(() => {
 		const contentArr = [modalData.label, modalData.description] as string[];
 		if (checkIfStringIsUndefinedOrEmpty(contentArr)) {
@@ -41,7 +39,6 @@ export function ModalContainer() {
 		});
 		return stringIsUndefinedOrEmpty;
 	};
-	console.log(modalData);
 	const handleSubmit = (data: FavoriteSpot) => {
 		addFavoriteSpot(data);
 		setLabel('');
@@ -62,8 +59,8 @@ export function ModalContainer() {
 			handleModalClose={handleModalClose}
 			handleRemove={handleRemove}
 			handleSubmit={handleSubmit}
-			setType={setType}
-			type={type}
+			setMushroomType={setMushroomType}
+			mushroomType={mushroomType}
 		/>
 	);
 }

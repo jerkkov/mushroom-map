@@ -1,4 +1,4 @@
-import type { FeatureCollection, Feature, Geometry, Polygon } from 'geojson';
+import type { FeatureCollection, Feature, Polygon } from 'geojson';
 import { LatLngExpression } from 'leaflet';
 
 export const soilProperties = {
@@ -131,13 +131,15 @@ export interface MushroomFilter {
 
 export type suppilovahvero = 'Suppilovahvero';
 export type kanttarelli = 'Kanttarelli';
+export type muu = 'Muu';
+export type mushroomType = suppilovahvero | kanttarelli | muu;
 
 export type FavoriteSpot = {
 	id: string;
 	position: LatLngExpression;
-	label: string;
-	description: string;
-	mushroomType?: suppilovahvero | kanttarelli;
+	label: string | undefined;
+	description: string | undefined;
+	mushroomType: mushroomType;
 };
 
 export const mushroomColors = {

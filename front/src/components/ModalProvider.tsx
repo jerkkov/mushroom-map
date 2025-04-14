@@ -1,16 +1,8 @@
-import {
-	createContext,
-	Dispatch,
-	ReactNode,
-	SetStateAction,
-	useCallback,
-	useContext,
-	useState,
-} from 'react';
+import { createContext, Dispatch, useContext, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 
 import { FavoriteSpot } from '../types/types';
-import { LatLng, LatLngExpression } from 'leaflet';
+import { LatLng } from 'leaflet';
 import { latLngToId } from '../services/utils';
 
 // export type ModalProps = {
@@ -39,23 +31,26 @@ const emptyModalData = {
 	position: {},
 	label: '',
 	description: '',
-	mushroomType: undefined,
+	mushroomType: 'Muu',
 } as FavoriteSpot;
 
-export type ModalDataProps = {
+export type ModalProps = {
 	open: boolean;
 	editing: boolean;
 	modalData: FavoriteSpot;
-	favoriteSpots: FavoriteSpot[];
 	toggleEditing: VoidFunction;
-	setEditing: Dispatch<React.SetStateAction<boolean>>;
-	handleModalOpen: (data?: LatLng) => void;
+	handleRemove: (id: string) => void;
 	handleModalClose: VoidFunction;
-	handleRemove: (id:string) => void;
-	addFavoriteSpot?: (newSpot: FavoriteSpot | undefined) => void;
 };
 
-const ModalContext = createContext<ModalDataProps | undefined>(undefined);
+export type ModalProviderProps = ModalProps & {
+	favoriteSpots: FavoriteSpot[];
+	setEditing: Dispatch<React.SetStateAction<boolean>>;
+	handleModalOpen: (data?: LatLng) => void;
+	addFavoriteSpot: (newSpot: FavoriteSpot) => void;
+};
+
+const ModalContext = createContext<ModalProviderProps | undefined>(undefined);
 
 export function ModalProvider({ children }: any) {
 	const [open, setOpen] = useState<boolean>(false);
@@ -86,15 +81,14 @@ export function ModalProvider({ children }: any) {
 		const favoriteSpotToBeRemoved = favoriteSpots.find(
 			(spot) => spot.id === id
 		);
-		if(favoriteSpotToBeRemoved) {
-			setFavoriteSpots(favoriteSpots.filter((spot) => spot.id !== id))
-			console.log(`Favorite spot with id ${id} removed`)
+		if (favoriteSpotToBeRemoved) {
+			setFavoriteSpots(favoriteSpots.filter((spot) => spot.id !== id));
+			console.log(`Favorite spot with id ${id} removed`);
+		} else {
+			console.log(`No favorite spot exists with id ${id}`);
 		}
-		else {
-			console.log(`No favorite spot exists with id ${id}`)
-		}
-		handleModalClose()
-	}
+		handleModalClose();
+	};
 
 	const handleModalOpen = (latLng?: LatLng) => {
 		if (!latLng) return;
@@ -107,7 +101,7 @@ export function ModalProvider({ children }: any) {
 		if (existingFavoriteSpot) {
 			setModalData(existingFavoriteSpot);
 		} else {
-			setModalData({ ...modalData, id: newLatLng, position: latLng});
+			setModalData({ ...modalData, id: newLatLng, position: latLng });
 		}
 		setOpen(true);
 	};
